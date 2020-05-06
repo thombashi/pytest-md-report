@@ -29,3 +29,7 @@ install:
 
 script:
   - tox
+
+notifications:
+  slack:
+    secure: $SLACK_SECURE_TOKEN
