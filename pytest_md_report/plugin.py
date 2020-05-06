@@ -250,4 +250,3 @@ def pytest_unconfigure(config):
 
     stat_count_map = _retrieve_stat_count_map(reporter)
     reporter._tw.write(make_md_report(config, reporter, stat_count_map))
-    reporter._tw.write("\n")
