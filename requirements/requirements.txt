@@ -1,0 +1,2 @@
+pytablewriter>=0.52.0,<1
+pytest>=3.3.2,<6
