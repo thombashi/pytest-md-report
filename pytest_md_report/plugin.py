@@ -43,10 +43,10 @@ def is_make_md_report(config: Config) -> bool:
     make_report = config.option.md_report
 
     if make_report is None:
-        make_report = config.getini(Ini.MD_REPORT)
+        make_report = os.environ.get("PYTEST_MD_REPORT")
 
     if make_report is None:
-        make_report = os.environ.get("PYTEST_MD_REPORT")
+        make_report = config.getini(Ini.MD_REPORT)
 
     if make_report is None:
         return False
@@ -61,15 +61,15 @@ def retrieve_verbosity_level(config: Config) -> int:
         verbosity_level = None
 
     if verbosity_level is None:
+        verbosity_level = os.environ.get("PYTEST_MD_REPORT_VERBOSE")
+
+    if verbosity_level is None:
         verbosity_level = config.getini(Ini.MD_REPORT_VERBOSE)
         if verbosity_level is not None:
             try:
                 verbosity_level = int(verbosity_level)
             except ValueError:
                 verbosity_level = None
-
-    if verbosity_level is None:
-        verbosity_level = os.environ.get("PYTEST_MD_REPORT_VERBOSE")
 
     if verbosity_level is None:
         verbosity_level = config.option.verbose
