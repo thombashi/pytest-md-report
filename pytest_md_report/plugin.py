@@ -37,6 +37,9 @@ def pytest_addoption(parser):
     parser.addini(
         Ini.MD_REPORT_VERBOSE, default=None, help="verbosity level for md report",
     )
+    parser.addini(
+        Ini.MD_REPORT_COLOR, default=None, help="",
+    )
 
 
 def is_make_md_report(config: Config) -> bool:
