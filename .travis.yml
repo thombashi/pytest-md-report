@@ -31,5 +31,6 @@ script:
   - tox
 
 notifications:
-  slack:
-    secure: $SLACK_SECURE_TOKEN
+  slack: 
+    rooms:
+      - $SLACK_TOKEN
