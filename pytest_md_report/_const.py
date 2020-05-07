@@ -1,6 +1,10 @@
 from textwrap import dedent
 
 
+class Default:
+    COLOR = "auto"
+
+
 class HelpMsg:
     MD_REPORT = "create markdown report."
     MD_REPORT_VERBOSE = dedent(
@@ -12,19 +16,15 @@ class HelpMsg:
         """\
         auto: diplay colorizing report for terminal with ANSI escape codes.
         never: diplay report without color.
-        defaults to 'auto'.
+        defaults to '{default}'.
         """
-    )
+    ).format(default=Default.COLOR)
 
 
 class Ini:
     MD_REPORT = "md_report"
     MD_REPORT_VERBOSE = "md_report_verbose"
     MD_REPORT_COLOR = "md_report_color"
-
-
-class Default:
-    COLOR = "auto"
 
 
 class Header:

@@ -18,7 +18,11 @@ def pytest_addoption(parser):
         "--md-report", action="store_true", default=None, help=HelpMsg.MD_REPORT,
     )
     group.addoption(
-        "--md-report-verbose", type=int, default=None, help=HelpMsg.MD_REPORT_VERBOSE,
+        "--md-report-verbose",
+        metavar="VERBOSITY_LEVEL",
+        type=int,
+        default=None,
+        help=HelpMsg.MD_REPORT_VERBOSE,
     )
     group.addoption(
         "--md-report-color", choices=["auto", "never"], default=None, help=HelpMsg.MD_REPORT_COLOR,
