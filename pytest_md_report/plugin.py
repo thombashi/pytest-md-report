@@ -244,11 +244,5 @@ def pytest_unconfigure(config):
         return
 
     reporter = config.pluginmanager.get_plugin("terminalreporter")
-
-    try:
-        duration = time.time() - reporter._sessionstarttime
-    except AttributeError:
-        return
-
     stat_count_map = _retrieve_stat_count_map(reporter)
     reporter._tw.write(make_md_report(config, reporter, stat_count_map))
