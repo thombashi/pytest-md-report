@@ -4,6 +4,10 @@ class Ini:
     MD_REPORT_COLOR = "md_report_color"
 
 
+class Default:
+    COLOR = "auto"
+
+
 class Header:
     FILEPATH = "filepath"
     TESTFUNC = "function"
