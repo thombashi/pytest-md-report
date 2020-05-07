@@ -76,10 +76,12 @@ def retrieve_verbosity_level(config: Config) -> int:
 
 def retrieve_report_color(config: Config) -> str:
     report_color = config.option.md_report_color
-    if report_color is None:
-        report_color = config.getini(Ini.MD_REPORT_VERBOSE)
+
     if report_color is None:
         report_color = os.environ.get("PYTEST_MD_REPORT_COLOR")
+
+    if report_color is None:
+        report_color = config.getini(Ini.MD_REPORT_VERBOSE)
 
     return report_color
 
