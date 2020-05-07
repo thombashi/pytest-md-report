@@ -41,10 +41,13 @@ def pytest_addoption(parser):
 
 def is_make_md_report(config: Config) -> bool:
     make_report = config.option.md_report
+
     if make_report is None:
         make_report = config.getini(Ini.MD_REPORT)
+
     if make_report is None:
         make_report = os.environ.get("PYTEST_MD_REPORT")
+
     if make_report is None:
         return False
 
