@@ -1,3 +1,22 @@
+from textwrap import dedent
+
+
+class HelpMsg:
+    MD_REPORT = "create markdown report."
+    MD_REPORT_VERBOSE = dedent(
+        """\
+        verbosity level for pytest-md-report. if not set, using verbosity level of pytest.
+        """
+    )
+    MD_REPORT_COLOR = dedent(
+        """\
+        auto: diplay colorizing report for terminal with ANSI escape codes.
+        never: diplay report without color.
+        defaults to 'auto'.
+        """
+    )
+
+
 class Ini:
     MD_REPORT = "md_report"
     MD_REPORT_VERBOSE = "md_report_verbose"

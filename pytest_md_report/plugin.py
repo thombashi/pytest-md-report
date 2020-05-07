@@ -8,36 +8,30 @@ from _pytest.terminal import TerminalReporter
 from pytablewriter import TableWriterFactory
 from pytablewriter.style import Cell, Style
 
-from ._const import BGColor, Default, FGColor, Header, Ini
+from ._const import BGColor, Default, FGColor, Header, HelpMsg, Ini
 
 
 def pytest_addoption(parser):
     group = parser.getgroup("md report", "make test results report with markdown table format")
 
     group.addoption(
-        "--md-report", action="store_true", default=None, help="create markdown report",
+        "--md-report", action="store_true", default=None, help=HelpMsg.MD_REPORT,
     )
     group.addoption(
-        "--md-report-verbose", type=int, default=None, help="verbosity level",
+        "--md-report-verbose", type=int, default=None, help=HelpMsg.MD_REPORT_VERBOSE,
     )
     group.addoption(
-        "--md-report-color",
-        choices=["auto", "never"],
-        default=None,
-        help="""
-        auto: colorizing report for terminal with ANSI escape codes,
-        never: report without color"
-        """
+        "--md-report-color", choices=["auto", "never"], default=None, help=HelpMsg.MD_REPORT_COLOR,
     )
 
     parser.addini(
-        Ini.MD_REPORT, type="bool", default=False, help="create markdown report",
+        Ini.MD_REPORT, type="bool", default=False, help=HelpMsg.MD_REPORT,
     )
     parser.addini(
-        Ini.MD_REPORT_VERBOSE, default=None, help="verbosity level for md report",
+        Ini.MD_REPORT_VERBOSE, default=None, help=HelpMsg.MD_REPORT_VERBOSE,
     )
     parser.addini(
-        Ini.MD_REPORT_COLOR, default=None, help="",
+        Ini.MD_REPORT_COLOR, default=None, help=HelpMsg.MD_REPORT_COLOR,
     )
 
 
