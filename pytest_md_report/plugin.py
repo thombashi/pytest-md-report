@@ -67,11 +67,10 @@ def retrieve_verbosity_level(config: Config) -> int:
 
     if verbosity_level is None:
         verbosity_level = config.getini(Ini.MD_REPORT_VERBOSE)
-        if verbosity_level is not None:
-            try:
-                verbosity_level = int(verbosity_level)
-            except ValueError:
-                verbosity_level = None
+        try:
+            verbosity_level = int(verbosity_level)
+        except (TypeError, ValueError):
+            verbosity_level = None
 
     if verbosity_level is None:
         verbosity_level = config.option.verbose
