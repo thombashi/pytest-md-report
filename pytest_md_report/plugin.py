@@ -1,5 +1,4 @@
 import os
-import time
 from collections import defaultdict
 from typing import Mapping  # noqa
 from typing import Any, Dict, Optional, Tuple, cast
