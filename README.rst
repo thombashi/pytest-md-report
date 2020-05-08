@@ -39,7 +39,7 @@ Usage
 ============================================
 ::
 
-    $ pytest --md-report
+    $ pytest --md-report examples/
 
 .. figure:: ss/pytest_md_report_example.png
     :scale: 80%
@@ -47,24 +47,45 @@ Usage
 
     Output example
 
+Increase verbosity level:
 
-Available options
+::
+
+    $ pytest -v --md-report examples/
+
+.. figure:: ss/pytest_md_report_example_verbose.png
+    :scale: 80%
+    :alt: output_example_verbose
+
+    Output example (verbose)
+
+
+Options
 ============================================
+
+Command options
+--------------------------------------------
 ::
 
     make test results report with markdown table format:
-      --md-report           create markdown report.
+      --md-report           create markdown report. you can also specify the value
+                            with PYTEST_MD_REPORT environment variable.
       --md-report-verbose=VERBOSITY_LEVEL
                             verbosity level for pytest-md-report. if not set, using
-                            verbosity level of pytest.
-      --md-report-color={auto,never}
-                            auto: diplay colorizing report for terminal with ANSI
-                            escape codes. never: diplay report without color.
-                            defaults to 'auto'.
+                            verbosity level of pytest. defaults to 0. you can also
+                            specify the value with PYTEST_MD_REPORT_VERBOSE
+                            environment variable.
+      --md-report-color={auto,text,never}
+                            auto: display colored (text and background) reports by
+                            using ANSI escape codes. text: display colored (text)
+                            reports by using ANSI escape codes. never: diplay report
+                            without color. defaults to 'auto'. you can also specify
+                            the value with PYTEST_MD_REPORT_COLOR environment
+                            variable.
 
 
 ini-options
-============================================
+--------------------------------------------
 [pytest] ini-options in the first pytest.ini|tox.ini|setup.cfg file found:
 
 ::
@@ -72,11 +93,12 @@ ini-options
   md_report (bool):     create markdown report.
   md_report_verbose (string):
                         verbosity level for pytest-md-report. if not set, using
-                        verbosity level of pytest.
+                        verbosity level of pytest. defaults to 0.
   md_report_color (string):
-                        auto: diplay colorizing report for terminal with ANSI
-                        escape codes. never: diplay report without color.
-                        defaults to 'auto'.
+                        auto: display colored (text and background) reports by
+                        using ANSI escape codes. text: display colored (text)
+                        reports by using ANSI escape codes. never: diplay report
+                        without color. defaults to 'auto'.
 
 Example of ``setup.cfg``:
 
@@ -94,3 +116,4 @@ Python 3.5+
 
 - `pytablewriter <https://github.com/thombashi/pytablewriter>`__
 - `pytest <https://docs.pytest.org/en/latest/>`__
+- `typepy <https://github.com/thombashi/typepy>`__
