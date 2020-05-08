@@ -16,6 +16,7 @@ class HelpMsg:
     MD_REPORT_VERBOSE = dedent(
         """\
         verbosity level for pytest-md-report. if not set, using verbosity level of pytest.
+        defaults to 0.
         """
     )
     MD_REPORT_COLOR = dedent(
@@ -25,6 +26,7 @@ class HelpMsg:
         defaults to '{default}'.
         """
     ).format(default=Default.COLOR)
+    EXTRA_MSG_TEMPLATE = " you can also specify the value with {} environment variable."
 
 
 class Ini:

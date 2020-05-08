@@ -15,17 +15,24 @@ def pytest_addoption(parser):
     group = parser.getgroup("md report", "make test results report with markdown table format")
 
     group.addoption(
-        "--md-report", action="store_true", default=None, help=HelpMsg.MD_REPORT,
+        "--md-report",
+        action="store_true",
+        default=None,
+        help=HelpMsg.MD_REPORT + HelpMsg.EXTRA_MSG_TEMPLATE.format(EnvVar.MD_REPORT),
     )
     group.addoption(
         "--md-report-verbose",
         metavar="VERBOSITY_LEVEL",
         type=int,
         default=None,
-        help=HelpMsg.MD_REPORT_VERBOSE,
+        help=HelpMsg.MD_REPORT_VERBOSE
+        + HelpMsg.EXTRA_MSG_TEMPLATE.format(EnvVar.MD_REPORT_VERBOSE),
     )
     group.addoption(
-        "--md-report-color", choices=["auto", "never"], default=None, help=HelpMsg.MD_REPORT_COLOR,
+        "--md-report-color",
+        choices=["auto", "never"],
+        default=None,
+        help=HelpMsg.MD_REPORT_COLOR + HelpMsg.EXTRA_MSG_TEMPLATE.format(EnvVar.MD_REPORT_COLOR),
     )
 
     parser.addini(
