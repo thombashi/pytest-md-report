@@ -7,6 +7,8 @@ from _pytest.config import Config
 from _pytest.terminal import TerminalReporter
 from pytablewriter import TableWriterFactory
 from pytablewriter.style import Cell, Style
+from typepy import Bool, Integer, StrictLevel
+from typepy.error import TypeConversionError
 
 from ._const import BGColor, Default, EnvVar, FGColor, Header, HelpMsg, Ini
 
@@ -50,7 +52,12 @@ def is_make_md_report(config: Config) -> bool:
     make_report = config.option.md_report
 
     if make_report is None:
-        make_report = os.environ.get(EnvVar.MD_REPORT)
+        try:
+            make_report = Bool(
+                os.environ.get(EnvVar.MD_REPORT), strict_level=StrictLevel.MIN
+            ).convert()
+        except TypeConversionError:
+            make_report = None
 
     if make_report is None:
         make_report = config.getini(Ini.MD_REPORT)
@@ -61,6 +68,13 @@ def is_make_md_report(config: Config) -> bool:
     return make_report
 
 
+def _to_int(value) -> Optional[int]:
+    try:
+        return Integer(os.environ.get(EnvVar.MD_REPORT), strict_level=StrictLevel.MIN).convert()
+    except TypeConversionError:
+        return None
+
+
 def retrieve_verbosity_level(config: Config) -> int:
     verbosity_level = config.option.md_report_verbose
 
@@ -68,14 +82,10 @@ def retrieve_verbosity_level(config: Config) -> int:
         verbosity_level = None
 
     if verbosity_level is None:
-        verbosity_level = os.environ.get(EnvVar.MD_REPORT_VERBOSE)
+        verbosity_level = _to_int(os.environ.get(EnvVar.MD_REPORT_VERBOSE))
 
     if verbosity_level is None:
-        verbosity_level = config.getini(Ini.MD_REPORT_VERBOSE)
-        try:
-            verbosity_level = int(verbosity_level)
-        except (TypeError, ValueError):
-            verbosity_level = None
+        verbosity_level = _to_int(config.getini(Ini.MD_REPORT_VERBOSE))
 
     if verbosity_level is None:
         verbosity_level = config.option.verbose
