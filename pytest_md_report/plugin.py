@@ -125,7 +125,7 @@ def _retrieve_stat_count_map(reporter: TerminalReporter) -> Dict[str, int]:
     return stat_count_map
 
 
-def retrieve_fg_bg_color(row: int, base_color: str, is_grayout):
+def retrieve_fg_bg_color(row: int, base_color: str, is_grayout: bool) -> Tuple[str, str]:
     bg_color = None  # type: Optional[str]
 
     if (row % 2) == 0:
