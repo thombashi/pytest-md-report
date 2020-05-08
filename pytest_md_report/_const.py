@@ -5,6 +5,12 @@ class Default:
     COLOR = "auto"
 
 
+class EnvVar:
+    MD_REPORT = "PYTEST_MD_REPORT"
+    MD_REPORT_VERBOSE = "PYTEST_MD_REPORT_VERBOSE"
+    MD_REPORT_COLOR = "PYTEST_MD_REPORT_COLOR"
+
+
 class HelpMsg:
     MD_REPORT = "create markdown report."
     MD_REPORT_VERBOSE = dedent(

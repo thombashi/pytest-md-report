@@ -8,7 +8,7 @@ from _pytest.terminal import TerminalReporter
 from pytablewriter import TableWriterFactory
 from pytablewriter.style import Cell, Style
 
-from ._const import BGColor, Default, FGColor, Header, HelpMsg, Ini
+from ._const import BGColor, Default, EnvVar, FGColor, Header, HelpMsg, Ini
 
 
 def pytest_addoption(parser):
@@ -43,7 +43,7 @@ def is_make_md_report(config: Config) -> bool:
     make_report = config.option.md_report
 
     if make_report is None:
-        make_report = os.environ.get("PYTEST_MD_REPORT")
+        make_report = os.environ.get(EnvVar.MD_REPORT)
 
     if make_report is None:
         make_report = config.getini(Ini.MD_REPORT)
@@ -61,7 +61,7 @@ def retrieve_verbosity_level(config: Config) -> int:
         verbosity_level = None
 
     if verbosity_level is None:
-        verbosity_level = os.environ.get("PYTEST_MD_REPORT_VERBOSE")
+        verbosity_level = os.environ.get(EnvVar.MD_REPORT_VERBOSE)
 
     if verbosity_level is None:
         verbosity_level = config.getini(Ini.MD_REPORT_VERBOSE)
@@ -80,7 +80,7 @@ def retrieve_report_color(config: Config) -> str:
     report_color = config.option.md_report_color
 
     if not report_color:
-        report_color = os.environ.get("PYTEST_MD_REPORT_COLOR")
+        report_color = os.environ.get(EnvVar.MD_REPORT_COLOR)
 
     if not report_color:
         report_color = config.getini(Ini.MD_REPORT_COLOR)
