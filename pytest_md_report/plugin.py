@@ -125,17 +125,22 @@ def _retrieve_stat_count_map(reporter: TerminalReporter) -> Dict[str, int]:
     return stat_count_map
 
 
-def retrieve_fg_bg_color(row: int, base_color: str, is_grayout: bool) -> Tuple[str, str]:
-    bg_color = None  # type: Optional[str]
+class ColorRetriever:
+    def __init__(self, row: int, is_grayout: bool) -> None:
+        self.__row = row
+        self.__is_grayout = is_grayout
 
-    if (row % 2) == 0:
-        fg_color = FGColor.GRAYOUT if is_grayout else base_color
-        bg_color = BGColor.EVEN_ROW
-    else:
-        fg_color = FGColor.GRAYOUT if is_grayout else base_color
-        bg_color = BGColor.ODD_ROW
+    def retrieve_fg_bg_color(self, base_color: str) -> Tuple[str, str]:
+        bg_color = None  # type: Optional[str]
 
-    return (fg_color, bg_color)
+        if (self.__row % 2) == 0:
+            fg_color = FGColor.GRAYOUT if self.__is_grayout else base_color
+            bg_color = BGColor.EVEN_ROW
+        else:
+            fg_color = FGColor.GRAYOUT if self.__is_grayout else base_color
+            bg_color = BGColor.ODD_ROW
+
+        return (fg_color, bg_color)
 
 
 def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
@@ -153,6 +158,8 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
 
         return Style(font_weight="bold")
 
+    retriever = ColorRetriever(cell.row, is_grayout)
+
     headers = writer.headers
     if headers[cell.col] in (Header.FILEPATH, Header.TESTFUNC):
         error_count = sum(
@@ -162,7 +169,7 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
             ]
         )
         if error_count > 0:
-            fg_color, bg_color = retrieve_fg_bg_color(cell.row, FGColor.ERROR, is_grayout)
+            fg_color, bg_color = retriever.retrieve_fg_bg_color(FGColor.ERROR)
             return Style(color=fg_color, bg_color=bg_color)
 
         skip_count = sum(
@@ -173,18 +180,18 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
             ]
         )
         if skip_count > 0:
-            fg_color, bg_color = retrieve_fg_bg_color(cell.row, FGColor.SKIP, is_grayout)
+            fg_color, bg_color = retriever.retrieve_fg_bg_color(FGColor.SKIP)
             return Style(color=fg_color, bg_color=bg_color)
 
-        fg_color, bg_color = retrieve_fg_bg_color(cell.row, FGColor.SUCCESS, is_grayout)
+        fg_color, bg_color = retriever.retrieve_fg_bg_color(FGColor.SUCCESS)
         return Style(color=fg_color, bg_color=bg_color)
 
     if headers[cell.col] in ("passed"):
-        fg_color, bg_color = retrieve_fg_bg_color(cell.row, FGColor.SUCCESS, is_grayout)
+        fg_color, bg_color = retriever.retrieve_fg_bg_color(FGColor.SUCCESS)
     elif headers[cell.col] in ("failed", "error"):
-        fg_color, bg_color = retrieve_fg_bg_color(cell.row, FGColor.ERROR, is_grayout)
+        fg_color, bg_color = retriever.retrieve_fg_bg_color(FGColor.ERROR)
     if headers[cell.col] in ("skipped", "xfailed", "xpassed"):
-        fg_color, bg_color = retrieve_fg_bg_color(cell.row, FGColor.SKIP, is_grayout)
+        fg_color, bg_color = retriever.retrieve_fg_bg_color(FGColor.SKIP)
 
     return Style(color=fg_color, bg_color=bg_color)
 
