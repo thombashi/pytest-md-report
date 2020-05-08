@@ -32,7 +32,7 @@ def pytest_addoption(parser):
     )
     group.addoption(
         "--md-report-color",
-        choices=["auto", "never"],
+        choices=["auto", "text", "never"],
         default=None,
         help=HelpMsg.MD_REPORT_COLOR + HelpMsg.EXTRA_MSG_TEMPLATE.format(EnvVar.MD_REPORT_COLOR),
     )
@@ -126,25 +126,27 @@ def _retrieve_stat_count_map(reporter: TerminalReporter) -> Dict[str, int]:
 
 
 class ColorRetriever:
-    def __init__(self, row: int, is_grayout: bool) -> None:
+    def __init__(self, row: int, is_grayout: bool, report_color: str) -> None:
         self.__row = row
         self.__is_grayout = is_grayout
+        self.__report_color = report_color
 
-    def retrieve_fg_bg_color(self, base_color: str) -> Tuple[str, str]:
+    def retrieve_fg_bg_color(self, base_color: str) -> Tuple[str, Optional[str]]:
         bg_color = None  # type: Optional[str]
 
         if (self.__row % 2) == 0:
             fg_color = FGColor.GRAYOUT if self.__is_grayout else base_color
-            bg_color = BGColor.EVEN_ROW
+            bg_color = BGColor.EVEN_ROW if self.__report_color == "auto" else None
         else:
             fg_color = FGColor.GRAYOUT if self.__is_grayout else base_color
-            bg_color = BGColor.ODD_ROW
+            bg_color = BGColor.ODD_ROW if self.__report_color == "auto" else None
 
         return (fg_color, bg_color)
 
 
 def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
     writer = kwargs["writer"]
+    report_color = kwargs["report_color"]
     fg_color = None
     bg_color = None
 
@@ -158,7 +160,7 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
 
         return Style(font_weight="bold")
 
-    retriever = ColorRetriever(cell.row, is_grayout)
+    retriever = ColorRetriever(cell.row, is_grayout, report_color)
 
     headers = writer.headers
     if headers[cell.col] in (Header.FILEPATH, Header.TESTFUNC):
@@ -261,7 +263,9 @@ def make_md_report(
     writer.margin = 1
     writer.value_matrix = matrix
 
-    if retrieve_report_color(config) != "never":
+    report_color = retrieve_report_color(config)
+    if report_color != "never":
+        writer.style_filter_kwargs = {"report_color": report_color}
         writer.add_style_filter(style_filter)
         writer.add_col_separator_style_filter(col_separator_style_filter)
 

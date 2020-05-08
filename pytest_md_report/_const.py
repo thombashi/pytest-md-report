@@ -22,6 +22,7 @@ class HelpMsg:
     MD_REPORT_COLOR = dedent(
         """\
         auto: diplay colorizing report for terminal with ANSI escape codes.
+        text: display colored (text) reports by using ANSI escape codes.
         never: diplay report without color.
         defaults to '{default}'.
         """
