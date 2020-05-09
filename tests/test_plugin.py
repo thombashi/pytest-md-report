@@ -47,10 +47,10 @@ def test_pytest_md_report(testdir):
     )
     expected = dedent(
         """\
-        |            filepath             | passed | failed | error | skipped | xfailed | xpassed |
-        |---------------------------------|-------:|-------:|------:|--------:|--------:|--------:|
-        | test_pytest_md_report_failed.py |      1 |      1 |     1 |       1 |       1 |       1 |
-        | TOTAL                           |      1 |      1 |     1 |       1 |       1 |       1 |"""
+        |         filepath         | passed | failed | error | skipped | xfailed | xpassed |
+        |--------------------------|-------:|-------:|------:|--------:|--------:|--------:|
+        | test_pytest_md_report.py |      1 |      1 |     1 |       1 |       1 |       1 |
+        | TOTAL                    |      1 |      1 |     1 |       1 |       1 |       1 |"""
     )
     result = testdir.runpytest("--md-report", "--md-report-color", "never")
     out = "\n".join(result.outlines[-4:])
