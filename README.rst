@@ -43,7 +43,7 @@ Usage
 
 .. figure:: ss/pytest_md_report_example.png
     :scale: 80%
-    :alt: output_example
+    :alt: https://github.com/thombashi/pytest-md-report/blob/master/ss/pytest_md_report_example.png
 
     Output example
 
@@ -55,7 +55,7 @@ Increase verbosity level:
 
 .. figure:: ss/pytest_md_report_example_verbose.png
     :scale: 80%
-    :alt: output_example_verbose
+    :alt: https://github.com/thombashi/pytest-md-report/blob/master/ss/pytest_md_report_example_verbose.png
 
     Output example (verbose)
 
@@ -78,10 +78,14 @@ Command options
       --md-report-color={auto,text,never}
                             auto: display colored (text and background) reports by
                             using ANSI escape codes. text: display colored (text)
-                            reports by using ANSI escape codes. never: diplay report
-                            without color. defaults to 'auto'. you can also specify
-                            the value with PYTEST_MD_REPORT_COLOR environment
-                            variable.
+                            reports by using ANSI escape codes. never: display
+                            report without color. defaults to 'auto'. you can also
+                            specify the value with PYTEST_MD_REPORT_COLOR
+                            environment variable.
+      --md-report-margin=MARGIN
+                            margin size for each cells. defaults to 1. you can also
+                            specify the value with PYTEST_MD_REPORT_MARGIN
+                            environment variable.
 
 
 ini-options
@@ -97,8 +101,11 @@ ini-options
   md_report_color (string):
                         auto: display colored (text and background) reports by
                         using ANSI escape codes. text: display colored (text)
-                        reports by using ANSI escape codes. never: diplay report
-                        without color. defaults to 'auto'.
+                        reports by using ANSI escape codes. never: display
+                        report without color. defaults to 'auto'.
+  md_report_margin (string):
+                        margin size for each cells. defaults to 1.
+
 
 Example of ``setup.cfg``:
 
