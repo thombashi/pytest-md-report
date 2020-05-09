@@ -4,7 +4,7 @@ include setup.cfg
 include tox.ini
 include */py.typed
 
-recursive-include test *
+recursive-include tests *
 recursive-include requirements *
 
 global-exclude __pycache__/*

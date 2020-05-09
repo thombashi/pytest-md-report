@@ -48,7 +48,7 @@ setuptools.setup(
     license=pkg_info["__license__"],
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/x-rst",
-    packages=setuptools.find_packages(exclude=["tests*"]),
+    packages=setuptools.find_packages(),
     package_data={MODULE_NAME: ["py.typed"]},
     project_urls={"Source": REPOSITORY_URL, "Tracker": "{:s}/issues".format(REPOSITORY_URL),},
     python_requires=">=3.5",
