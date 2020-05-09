@@ -23,7 +23,7 @@ class HelpMsg:
         """\
         auto: display colored (text and background) reports by using ANSI escape codes.
         text: display colored (text) reports by using ANSI escape codes.
-        never: diplay report without color.
+        never: display report without color.
         defaults to '{default}'.
         """
     ).format(default=Default.COLOR)
