@@ -267,7 +267,9 @@ def make_md_report(
     if report_color != ColorPoicy.NEVER:
         writer.style_filter_kwargs = {"report_color": report_color}
         writer.add_style_filter(style_filter)
-        writer.add_col_separator_style_filter(col_separator_style_filter)
+
+        if report_color == ColorPoicy.AUTO:
+            writer.add_col_separator_style_filter(col_separator_style_filter)
 
     return writer.dumps()
 
