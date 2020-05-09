@@ -3,6 +3,33 @@ import sys
 from textwrap import dedent
 
 
+PYFILE = dedent(
+    """\
+    import pytest
+
+    def test_pass():
+        assert True
+
+    def test_failed():
+        assert False
+
+    def test_skipped():
+        pytest.skip()
+
+    def test_error(invalid_fixture):
+        pass
+
+    @pytest.mark.xfail()
+    def test_xfailed():
+        assert False
+
+    @pytest.mark.xfail()
+    def test_xpassed():
+        assert True
+    """
+)
+
+
 def print_test_result(expected, actual, error=None):
     print("[expected]\n{}\n".format(expected))
     print("[actual]\n{}\n".format(actual))
@@ -18,33 +45,7 @@ def print_test_result(expected, actual, error=None):
 
 
 def test_pytest_md_report(testdir):
-    testdir.makepyfile(
-        dedent(
-            """\
-            import pytest
-
-            def test_pass():
-                assert True
-
-            def test_failed():
-                assert False
-
-            def test_skipped():
-                pytest.skip()
-
-            def test_error(invalid_fixture):
-                pass
-
-            @pytest.mark.xfail()
-            def test_xfailed():
-                assert False
-
-            @pytest.mark.xfail()
-            def test_xpassed():
-                assert True
-            """
-        )
-    )
+    testdir.makepyfile(PYFILE)
     expected = dedent(
         """\
         |         filepath         | passed | failed | error | skipped | xfailed | xpassed |
