@@ -204,7 +204,6 @@ def col_separator_style_filter(
     fg_color = None
     bg_color = None
     row = left_cell.row if left_cell else cast(Cell, right_cell).row
-    col = left_cell.col if left_cell else cast(Cell, right_cell).col
 
     if row % 2 == 0:
         bg_color = BGColor.EVEN_ROW
