@@ -17,7 +17,7 @@ def print_test_result(expected, actual, error=None):
         print(d)
 
 
-def test_pytest_md_report_failed(testdir):
+def test_pytest_md_report(testdir):
     testdir.makepyfile(
         dedent(
             """\
