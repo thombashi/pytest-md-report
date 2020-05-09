@@ -41,6 +41,13 @@ class Header:
     TESTFUNC = "function"
 
 
+class ColorPoicy:
+    AUTO = "auto"
+    TEXT = "text"
+    NEVER = "never"
+    LIST = (AUTO, TEXT, NEVER)
+
+
 class FGColor:
     SUCCESS = "light_green"
     ERROR = "light_red"

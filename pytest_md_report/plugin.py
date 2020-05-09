@@ -10,7 +10,7 @@ from pytablewriter.style import Cell, Style
 from typepy import Bool, Integer, StrictLevel
 from typepy.error import TypeConversionError
 
-from ._const import BGColor, Default, EnvVar, FGColor, Header, HelpMsg, Ini
+from ._const import BGColor, ColorPoicy, Default, EnvVar, FGColor, Header, HelpMsg, Ini
 
 
 def pytest_addoption(parser):
@@ -32,7 +32,7 @@ def pytest_addoption(parser):
     )
     group.addoption(
         "--md-report-color",
-        choices=["auto", "text", "never"],
+        choices=ColorPoicy.LIST,
         default=None,
         help=HelpMsg.MD_REPORT_COLOR + HelpMsg.EXTRA_MSG_TEMPLATE.format(EnvVar.MD_REPORT_COLOR),
     )
@@ -136,10 +136,10 @@ class ColorRetriever:
 
         if (self.__row % 2) == 0:
             fg_color = FGColor.GRAYOUT if self.__is_grayout else base_color
-            bg_color = BGColor.EVEN_ROW if self.__report_color == "auto" else None
+            bg_color = BGColor.EVEN_ROW if self.__report_color == ColorPoicy.AUTO else None
         else:
             fg_color = FGColor.GRAYOUT if self.__is_grayout else base_color
-            bg_color = BGColor.ODD_ROW if self.__report_color == "auto" else None
+            bg_color = BGColor.ODD_ROW if self.__report_color == ColorPoicy.AUTO else None
 
         return (fg_color, bg_color)
 
@@ -264,7 +264,7 @@ def make_md_report(
     writer.value_matrix = matrix
 
     report_color = retrieve_report_color(config)
-    if report_color != "never":
+    if report_color != ColorPoicy.NEVER:
         writer.style_filter_kwargs = {"report_color": report_color}
         writer.add_style_filter(style_filter)
         writer.add_col_separator_style_filter(col_separator_style_filter)
