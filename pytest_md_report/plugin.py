@@ -70,7 +70,7 @@ def is_make_md_report(config: Config) -> bool:
 
 def _to_int(value) -> Optional[int]:
     try:
-        return Integer(os.environ.get(EnvVar.MD_REPORT), strict_level=StrictLevel.MIN).convert()
+        return Integer(value, strict_level=StrictLevel.MIN).convert()
     except TypeConversionError:
         return None
 
