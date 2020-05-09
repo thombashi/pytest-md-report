@@ -36,6 +36,13 @@ def pytest_addoption(parser):
         default=None,
         help=HelpMsg.MD_REPORT_COLOR + HelpMsg.EXTRA_MSG_TEMPLATE.format(EnvVar.MD_REPORT_COLOR),
     )
+    group.addoption(
+        "--md-report-margin",
+        metavar="MARGIN",
+        type=int,
+        default=None,
+        help=HelpMsg.MD_REPORT_MARGIN + HelpMsg.EXTRA_MSG_TEMPLATE.format(EnvVar.MD_REPORT_MARGIN),
+    )
 
     parser.addini(
         Ini.MD_REPORT, type="bool", default=False, help=HelpMsg.MD_REPORT,
@@ -45,6 +52,9 @@ def pytest_addoption(parser):
     )
     parser.addini(
         Ini.MD_REPORT_COLOR, default=None, help=HelpMsg.MD_REPORT_COLOR,
+    )
+    parser.addini(
+        Ini.MD_REPORT_MARGIN, default=None, help=HelpMsg.MD_REPORT_MARGIN,
     )
 
 
@@ -106,6 +116,21 @@ def retrieve_report_color(config: Config) -> str:
         return Default.COLOR
 
     return report_color
+
+
+def retrieve_report_margin(config: Config) -> int:
+    margin = config.option.md_report_margin
+
+    if margin is None:
+        margin = _to_int(os.environ.get(EnvVar.MD_REPORT_MARGIN))
+
+    if margin is None:
+        margin = _to_int(config.getini(Ini.MD_REPORT_MARGIN))
+
+    if margin is None:
+        return Default.MARGIN
+
+    return margin
 
 
 def _normalize_stat_name(name: str) -> str:
@@ -259,7 +284,7 @@ def make_md_report(
         writer.headers = [Header.FILEPATH, Header.TESTFUNC] + outcomes
         matrix.append(["TOTAL", ""] + [total_stats.get(key, 0) for key in outcomes])  # type: ignore
 
-    writer.margin = 1
+    writer.margin = retrieve_report_margin(config)
     writer.value_matrix = matrix
 
     report_color = retrieve_report_color(config)
