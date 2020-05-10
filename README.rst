@@ -47,17 +47,38 @@ Usage
 
     Output example
 
-Increase verbosity level:
+
+Other examples
+--------------------------------------------
+Increase verbosity level (``--md-report-verbose`` option):
 
 ::
 
-    $ pytest -v --md-report examples/
+    $ pytest --md-report --md-report-verbose=1 examples/
 
 .. figure:: ss/pytest_md_report_example_verbose.png
     :scale: 80%
     :alt: https://github.com/thombashi/pytest-md-report/blob/master/ss/pytest_md_report_example_verbose.png
 
     Output example (verbose)
+
+Not rendering results of zero value (``--md-report-zeros emmpty`` option):
+
+::
+
+    $ pytest --md-report --md-report-zeros empty --md-report-color never examples/
+
+::
+
+    |         filepath         | passed | failed | error | skipped | xfailed | xpassed |
+    |--------------------------|-------:|-------:|------:|--------:|--------:|--------:|
+    | examples/test_error.py   |        |        |     2 |         |         |         |
+    | examples/test_failed.py  |        |      2 |       |         |         |         |
+    | examples/test_pass.py    |      2 |        |       |         |         |         |
+    | examples/test_skipped.py |        |        |       |       2 |         |         |
+    | examples/test_xfailed.py |        |        |       |         |       2 |         |
+    | examples/test_xpassed.py |        |        |       |         |         |       2 |
+    | TOTAL                    |      2 |      2 |     2 |       2 |       2 |       2 |
 
 
 Options
@@ -86,7 +107,11 @@ Command options
                             margin size for each cells. defaults to 1. you can also
                             specify the value with PYTEST_MD_REPORT_MARGIN
                             environment variable.
-
+      --md-report-zeros={number,empty}
+                            rendering method for results of zero values. number:
+                            render as a digit number (0). empty: not rendering.
+                            defaults to number. you can also specify the value with
+                            PYTEST_MD_REPORT_ZEROS environment variable.
 
 ini-options
 --------------------------------------------
@@ -105,7 +130,10 @@ ini-options
                         report without color. defaults to 'auto'.
   md_report_margin (string):
                         margin size for each cells. defaults to 1.
-
+  md_report_zeros (string):
+                        rendering method for results of zero values. number:
+                        render as a digit number (0). empty: not rendering.
+                        defaults to number.
 
 Example of ``setup.cfg``:
 
