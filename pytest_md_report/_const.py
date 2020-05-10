@@ -4,6 +4,7 @@ from textwrap import dedent
 class Default:
     COLOR = "auto"
     MARGIN = 1
+    ZEROS = "number"
 
 
 class EnvVar:
@@ -11,6 +12,7 @@ class EnvVar:
     MD_REPORT_VERBOSE = "PYTEST_MD_REPORT_VERBOSE"
     MD_REPORT_COLOR = "PYTEST_MD_REPORT_COLOR"
     MD_REPORT_MARGIN = "PYTEST_MD_REPORT_MARGIN"
+    MD_REPORT_ZEROS = "PYTEST_MD_REPORT_ZEROS"
 
 
 class HelpMsg:
@@ -35,6 +37,14 @@ class HelpMsg:
         defaults to {default}.
         """
     ).format(default=Default.MARGIN)
+    MD_REPORT_ZEROS = dedent(
+        """\
+        rendering method for results of zero values.
+        number: render as a digit number (0).
+        empty: not rendering.
+        defaults to {default}.
+        """
+    ).format(default=Default.ZEROS)
     EXTRA_MSG_TEMPLATE = " you can also specify the value with {} environment variable."
 
 
@@ -43,6 +53,7 @@ class Ini:
     MD_REPORT_VERBOSE = "md_report_verbose"
     MD_REPORT_COLOR = "md_report_color"
     MD_REPORT_MARGIN = "md_report_margin"
+    MD_REPORT_ZEROS = "md_report_zeros"
 
 
 class Header:
@@ -55,6 +66,12 @@ class ColorPoicy:
     TEXT = "text"
     NEVER = "never"
     LIST = (AUTO, TEXT, NEVER)
+
+
+class ZerosRender:
+    NUMBER = "number"
+    EMPTY = "empty"
+    LIST = (NUMBER, EMPTY)
 
 
 class FGColor:

@@ -10,7 +10,14 @@ from pytablewriter.style import Cell, Style
 from typepy import Bool, Integer, StrictLevel
 from typepy.error import TypeConversionError
 
-from ._const import BGColor, ColorPoicy, Default, EnvVar, FGColor, Header, HelpMsg, Ini
+from ._const import BGColor, ColorPoicy, Default, EnvVar, FGColor, Header, HelpMsg, Ini, ZerosRender
+
+
+def zero_to_nullstr(value) -> str:
+    if value == 0:
+        return ""
+
+    return value
 
 
 def pytest_addoption(parser):
@@ -43,6 +50,12 @@ def pytest_addoption(parser):
         default=None,
         help=HelpMsg.MD_REPORT_MARGIN + HelpMsg.EXTRA_MSG_TEMPLATE.format(EnvVar.MD_REPORT_MARGIN),
     )
+    group.addoption(
+        "--md-report-zeros",
+        choices=ZerosRender.LIST,
+        default=None,
+        help=HelpMsg.MD_REPORT_ZEROS + HelpMsg.EXTRA_MSG_TEMPLATE.format(EnvVar.MD_REPORT_ZEROS),
+    )
 
     parser.addini(
         Ini.MD_REPORT, type="bool", default=False, help=HelpMsg.MD_REPORT,
@@ -55,6 +68,9 @@ def pytest_addoption(parser):
     )
     parser.addini(
         Ini.MD_REPORT_MARGIN, default=None, help=HelpMsg.MD_REPORT_MARGIN,
+    )
+    parser.addini(
+        Ini.MD_REPORT_ZEROS, default=None, help=HelpMsg.MD_REPORT_ZEROS,
     )
 
 
@@ -131,6 +147,21 @@ def retrieve_report_margin(config: Config) -> int:
         return Default.MARGIN
 
     return margin
+
+
+def retrieve_report_zeros(config: Config) -> str:
+    report_zeros = config.option.md_report_zeros
+
+    if not report_zeros:
+        report_zeros = os.environ.get(EnvVar.MD_REPORT_ZEROS)
+
+    if not report_zeros:
+        report_zeros = config.getini(Ini.MD_REPORT_ZEROS)
+
+    if not report_zeros:
+        report_zeros = Default.ZEROS
+
+    return report_zeros
 
 
 def _normalize_stat_name(name: str) -> str:
@@ -294,6 +325,10 @@ def make_md_report(
 
         if report_color == ColorPoicy.AUTO:
             writer.add_col_separator_style_filter(col_separator_style_filter)
+
+    report_zeros = retrieve_report_zeros(config)
+    if report_zeros == ZerosRender.EMPTY:
+        writer.register_trans_func(zero_to_nullstr)
 
     return writer.dumps()
 

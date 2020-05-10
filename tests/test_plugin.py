@@ -3,6 +3,14 @@ import sys
 from textwrap import dedent
 
 
+PYFILE_PASS = dedent(
+    """\
+    import pytest
+
+    def test_pass():
+        assert True
+    """
+)
 PYFILE = dedent(
     """\
     import pytest
@@ -70,6 +78,24 @@ def test_pytest_md_report_margin(testdir):
         |TOTAL                          |     1|     1|    1|      1|      1|      1|"""
     )
     result = testdir.runpytest("--md-report", "--md-report-color", "never", "--md-report-margin", 0)
+    out = "\n".join(result.outlines[-4:])
+    print_test_result(expected=expected, actual=out)
+
+    assert out == expected
+
+
+def test_pytest_md_report_zeros(testdir):
+    testdir.makepyfile(PYFILE_PASS)
+    expected = dedent(
+        """\
+        |            filepath            | passed | failed | error | skipped | xfailed | xpassed |
+        |--------------------------------|-------:|--------|-------|---------|---------|---------|
+        | test_pytest_md_report_zeros.py |      1 |        |       |         |         |         |
+        | TOTAL                          |      1 |        |       |         |         |         |"""
+    )
+    result = testdir.runpytest(
+        "--md-report", "--md-report-color", "never", "--md-report-zeros", "empty"
+    )
     out = "\n".join(result.outlines[-4:])
     print_test_result(expected=expected, actual=out)
 
