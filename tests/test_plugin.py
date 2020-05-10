@@ -3,7 +3,7 @@ import sys
 from textwrap import dedent
 
 
-PYFILE_PASS = dedent(
+PYFILE_PASS_TEST = dedent(
     """\
     import pytest
 
@@ -11,7 +11,7 @@ PYFILE_PASS = dedent(
         assert True
     """
 )
-PYFILE = dedent(
+PYFILE_MIX_TESTS = dedent(
     """\
     import pytest
 
@@ -53,7 +53,7 @@ def print_test_result(expected, actual, error=None):
 
 
 def test_pytest_md_report(testdir):
-    testdir.makepyfile(PYFILE)
+    testdir.makepyfile(PYFILE_MIX_TESTS)
     expected = dedent(
         """\
         |         filepath         | passed | failed | error | skipped | xfailed | xpassed |
@@ -69,7 +69,7 @@ def test_pytest_md_report(testdir):
 
 
 def test_pytest_md_report_margin(testdir):
-    testdir.makepyfile(PYFILE)
+    testdir.makepyfile(PYFILE_MIX_TESTS)
     expected = dedent(
         """\
         |           filepath            |passed|failed|error|skipped|xfailed|xpassed|
@@ -85,7 +85,7 @@ def test_pytest_md_report_margin(testdir):
 
 
 def test_pytest_md_report_zeros(testdir):
-    testdir.makepyfile(PYFILE_PASS)
+    testdir.makepyfile(PYFILE_PASS_TEST)
     expected = dedent(
         """\
         |            filepath            | passed | failed | error | skipped | xfailed | xpassed |
