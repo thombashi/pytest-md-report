@@ -210,7 +210,7 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
     if cell.value == 0:
         is_grayout = True
 
-    if cell.row < 0:
+    if cell.is_header_row():
         if all([writer.value_matrix[r][cell.col] == 0 for r in range(len(writer.value_matrix))]):
             return Style(color=FGColor.GRAYOUT, font_weight="bold")
 
