@@ -10,7 +10,7 @@ from pytablewriter.style import Cell, Style
 from typepy import Bool, Integer, StrictLevel
 from typepy.error import TypeConversionError
 
-from ._const import BGColor, ColorPoicy, Default, EnvVar, FGColor, Header, HelpMsg, Ini, ZerosRender
+from ._const import BGColor, ColorPoicy, Default, FGColor, Header, HelpMsg, Option, ZerosRender
 
 
 def zero_to_nullstr(value) -> str:
@@ -24,53 +24,56 @@ def pytest_addoption(parser):
     group = parser.getgroup("md report", "make test results report with markdown table format")
 
     group.addoption(
-        "--md-report",
+        Option.MD_REPORT.cmdoption_str,
         action="store_true",
         default=None,
-        help=HelpMsg.MD_REPORT + HelpMsg.EXTRA_MSG_TEMPLATE.format(EnvVar.MD_REPORT),
+        help=HelpMsg.MD_REPORT + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT.envvar_str),
     )
     group.addoption(
-        "--md-report-verbose",
+        Option.MD_REPORT_VERBOSE.cmdoption_str,
         metavar="VERBOSITY_LEVEL",
         type=int,
         default=None,
         help=HelpMsg.MD_REPORT_VERBOSE
-        + HelpMsg.EXTRA_MSG_TEMPLATE.format(EnvVar.MD_REPORT_VERBOSE),
+        + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_VERBOSE.envvar_str),
     )
     group.addoption(
-        "--md-report-color",
+        Option.MD_REPORT_COLOR.cmdoption_str,
         choices=ColorPoicy.LIST,
         default=None,
-        help=HelpMsg.MD_REPORT_COLOR + HelpMsg.EXTRA_MSG_TEMPLATE.format(EnvVar.MD_REPORT_COLOR),
+        help=HelpMsg.MD_REPORT_COLOR
+        + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_COLOR.envvar_str),
     )
     group.addoption(
-        "--md-report-margin",
+        Option.MD_REPORT_MARGIN.cmdoption_str,
         metavar="MARGIN",
         type=int,
         default=None,
-        help=HelpMsg.MD_REPORT_MARGIN + HelpMsg.EXTRA_MSG_TEMPLATE.format(EnvVar.MD_REPORT_MARGIN),
+        help=HelpMsg.MD_REPORT_MARGIN
+        + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_MARGIN.envvar_str),
     )
     group.addoption(
-        "--md-report-zeros",
+        Option.MD_REPORT_ZEROS.cmdoption_str,
         choices=ZerosRender.LIST,
         default=None,
-        help=HelpMsg.MD_REPORT_ZEROS + HelpMsg.EXTRA_MSG_TEMPLATE.format(EnvVar.MD_REPORT_ZEROS),
+        help=HelpMsg.MD_REPORT_ZEROS
+        + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_ZEROS.envvar_str),
     )
 
     parser.addini(
-        Ini.MD_REPORT, type="bool", default=False, help=HelpMsg.MD_REPORT,
+        Option.MD_REPORT.inioption_str, type="bool", default=False, help=HelpMsg.MD_REPORT,
     )
     parser.addini(
-        Ini.MD_REPORT_VERBOSE, default=None, help=HelpMsg.MD_REPORT_VERBOSE,
+        Option.MD_REPORT_VERBOSE.inioption_str, default=None, help=HelpMsg.MD_REPORT_VERBOSE,
     )
     parser.addini(
-        Ini.MD_REPORT_COLOR, default=None, help=HelpMsg.MD_REPORT_COLOR,
+        Option.MD_REPORT_COLOR.inioption_str, default=None, help=HelpMsg.MD_REPORT_COLOR,
     )
     parser.addini(
-        Ini.MD_REPORT_MARGIN, default=None, help=HelpMsg.MD_REPORT_MARGIN,
+        Option.MD_REPORT_MARGIN.inioption_str, default=None, help=HelpMsg.MD_REPORT_MARGIN,
     )
     parser.addini(
-        Ini.MD_REPORT_ZEROS, default=None, help=HelpMsg.MD_REPORT_ZEROS,
+        Option.MD_REPORT_ZEROS.inioption_str, default=None, help=HelpMsg.MD_REPORT_ZEROS,
     )
 
 
@@ -80,13 +83,13 @@ def is_make_md_report(config: Config) -> bool:
     if make_report is None:
         try:
             make_report = Bool(
-                os.environ.get(EnvVar.MD_REPORT), strict_level=StrictLevel.MIN
+                os.environ.get(Option.MD_REPORT.envvar_str), strict_level=StrictLevel.MIN
             ).convert()
         except TypeConversionError:
             make_report = None
 
     if make_report is None:
-        make_report = config.getini(Ini.MD_REPORT)
+        make_report = config.getini(Option.MD_REPORT.inioption_str)
 
     if make_report is None:
         return False
@@ -108,10 +111,10 @@ def retrieve_verbosity_level(config: Config) -> int:
         verbosity_level = None
 
     if verbosity_level is None:
-        verbosity_level = _to_int(os.environ.get(EnvVar.MD_REPORT_VERBOSE))
+        verbosity_level = _to_int(os.environ.get(Option.MD_REPORT_VERBOSE.envvar_str))
 
     if verbosity_level is None:
-        verbosity_level = _to_int(config.getini(Ini.MD_REPORT_VERBOSE))
+        verbosity_level = _to_int(config.getini(Option.MD_REPORT_VERBOSE.inioption_str))
 
     if verbosity_level is None:
         verbosity_level = config.option.verbose
@@ -123,10 +126,10 @@ def retrieve_report_color(config: Config) -> str:
     report_color = config.option.md_report_color
 
     if not report_color:
-        report_color = os.environ.get(EnvVar.MD_REPORT_COLOR)
+        report_color = os.environ.get(Option.MD_REPORT_COLOR.envvar_str)
 
     if not report_color:
-        report_color = config.getini(Ini.MD_REPORT_COLOR)
+        report_color = config.getini(Option.MD_REPORT_COLOR.inioption_str)
 
     if not report_color:
         return Default.COLOR
@@ -138,10 +141,10 @@ def retrieve_report_margin(config: Config) -> int:
     margin = config.option.md_report_margin
 
     if margin is None:
-        margin = _to_int(os.environ.get(EnvVar.MD_REPORT_MARGIN))
+        margin = _to_int(os.environ.get(Option.MD_REPORT_MARGIN.envvar_str))
 
     if margin is None:
-        margin = _to_int(config.getini(Ini.MD_REPORT_MARGIN))
+        margin = _to_int(config.getini(Option.MD_REPORT_MARGIN.inioption_str))
 
     if margin is None:
         return Default.MARGIN
@@ -153,10 +156,10 @@ def retrieve_report_zeros(config: Config) -> str:
     report_zeros = config.option.md_report_zeros
 
     if not report_zeros:
-        report_zeros = os.environ.get(EnvVar.MD_REPORT_ZEROS)
+        report_zeros = os.environ.get(Option.MD_REPORT_ZEROS.envvar_str)
 
     if not report_zeros:
-        report_zeros = config.getini(Ini.MD_REPORT_ZEROS)
+        report_zeros = config.getini(Option.MD_REPORT_ZEROS.inioption_str)
 
     if not report_zeros:
         report_zeros = Default.ZEROS

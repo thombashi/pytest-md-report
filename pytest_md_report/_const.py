@@ -1,20 +1,31 @@
+from enum import Enum, unique
 from textwrap import dedent
 
-
-class EnvVar:
-    MD_REPORT = "PYTEST_MD_REPORT"
-    MD_REPORT_VERBOSE = "PYTEST_MD_REPORT_VERBOSE"
-    MD_REPORT_COLOR = "PYTEST_MD_REPORT_COLOR"
-    MD_REPORT_MARGIN = "PYTEST_MD_REPORT_MARGIN"
-    MD_REPORT_ZEROS = "PYTEST_MD_REPORT_ZEROS"
+from pathvalidate import replace_symbol
 
 
-class Ini:
-    MD_REPORT = "md_report"
-    MD_REPORT_VERBOSE = "md_report_verbose"
-    MD_REPORT_COLOR = "md_report_color"
-    MD_REPORT_MARGIN = "md_report_margin"
-    MD_REPORT_ZEROS = "md_report_zeros"
+@unique
+class Option(Enum):
+    MD_REPORT = "md-report"
+    MD_REPORT_VERBOSE = "md-report-verbose"
+    MD_REPORT_COLOR = "md-report-color"
+    MD_REPORT_MARGIN = "md-report-margin"
+    MD_REPORT_ZEROS = "md-report-zeros"
+
+    @property
+    def cmdoption_str(self) -> str:
+        return "--" + replace_symbol(self.__name, "-").lower()
+
+    @property
+    def envvar_str(self) -> str:
+        return "PYTEST_" + replace_symbol(self.__name, "_").upper()
+
+    @property
+    def inioption_str(self) -> str:
+        return replace_symbol(self.__name, "_").lower()
+
+    def __init__(self, name: str) -> None:
+        self.__name = name.strip()
 
 
 class Header:
