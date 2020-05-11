@@ -23,10 +23,10 @@ class ZerosRender:
 
 
 class FGColor:
-    SUCCESS = "light_green"
-    ERROR = "light_red"
-    SKIP = "light_yellow"
-    GRAYOUT = "light_black"
+    SUCCESS = "SUCCESS"
+    ERROR = "ERROR"
+    SKIP = "SKIP"
+    GRAYOUT = "GRAYOUT"
 
 
 class BGColor:
@@ -38,6 +38,12 @@ class Default:
     COLOR = ColorPoicy.AUTO
     MARGIN = 1
     ZEROS = ZerosRender.NUMBER
+
+    class FGColor:
+        SUCCESS = "light_green"
+        ERROR = "light_red"
+        SKIP = "light_yellow"
+        GRAYOUT = "light_black"
 
 
 @unique
