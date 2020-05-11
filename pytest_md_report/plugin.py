@@ -27,21 +27,22 @@ def pytest_addoption(parser):
         Option.MD_REPORT.cmdoption_str,
         action="store_true",
         default=None,
-        help=HelpMsg.MD_REPORT + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT.envvar_str),
+        help=Option.MD_REPORT.help_msg
+        + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT.envvar_str),
     )
     group.addoption(
         Option.MD_REPORT_VERBOSE.cmdoption_str,
         metavar="VERBOSITY_LEVEL",
         type=int,
         default=None,
-        help=HelpMsg.MD_REPORT_VERBOSE
+        help=Option.MD_REPORT_VERBOSE.help_msg
         + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_VERBOSE.envvar_str),
     )
     group.addoption(
         Option.MD_REPORT_COLOR.cmdoption_str,
         choices=ColorPoicy.LIST,
         default=None,
-        help=HelpMsg.MD_REPORT_COLOR
+        help=Option.MD_REPORT_COLOR.help_msg
         + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_COLOR.envvar_str),
     )
     group.addoption(
@@ -49,31 +50,33 @@ def pytest_addoption(parser):
         metavar="MARGIN",
         type=int,
         default=None,
-        help=HelpMsg.MD_REPORT_MARGIN
+        help=Option.MD_REPORT_MARGIN.help_msg
         + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_MARGIN.envvar_str),
     )
     group.addoption(
         Option.MD_REPORT_ZEROS.cmdoption_str,
         choices=ZerosRender.LIST,
         default=None,
-        help=HelpMsg.MD_REPORT_ZEROS
+        help=Option.MD_REPORT_ZEROS.help_msg
         + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_ZEROS.envvar_str),
     )
 
     parser.addini(
-        Option.MD_REPORT.inioption_str, type="bool", default=False, help=HelpMsg.MD_REPORT,
+        Option.MD_REPORT.inioption_str, type="bool", default=False, help=Option.MD_REPORT.help_msg,
     )
     parser.addini(
-        Option.MD_REPORT_VERBOSE.inioption_str, default=None, help=HelpMsg.MD_REPORT_VERBOSE,
+        Option.MD_REPORT_VERBOSE.inioption_str,
+        default=None,
+        help=Option.MD_REPORT_VERBOSE.help_msg,
     )
     parser.addini(
-        Option.MD_REPORT_COLOR.inioption_str, default=None, help=HelpMsg.MD_REPORT_COLOR,
+        Option.MD_REPORT_COLOR.inioption_str, default=None, help=Option.MD_REPORT_COLOR.help_msg,
     )
     parser.addini(
-        Option.MD_REPORT_MARGIN.inioption_str, default=None, help=HelpMsg.MD_REPORT_MARGIN,
+        Option.MD_REPORT_MARGIN.inioption_str, default=None, help=Option.MD_REPORT_MARGIN.help_msg,
     )
     parser.addini(
-        Option.MD_REPORT_ZEROS.inioption_str, default=None, help=HelpMsg.MD_REPORT_ZEROS,
+        Option.MD_REPORT_ZEROS.inioption_str, default=None, help=Option.MD_REPORT_ZEROS.help_msg
     )
 
 
