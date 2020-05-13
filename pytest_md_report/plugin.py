@@ -60,6 +60,24 @@ def pytest_addoption(parser):
         help=Option.MD_REPORT_ZEROS.help_msg
         + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_ZEROS.envvar_str),
     )
+    group.addoption(
+        Option.MD_REPORT_SUCCESS_COLOR.cmdoption_str,
+        default=None,
+        help=Option.MD_REPORT_SUCCESS_COLOR.help_msg
+        + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_SUCCESS_COLOR.envvar_str),
+    )
+    group.addoption(
+        Option.MD_REPORT_SKIP_COLOR.cmdoption_str,
+        default=None,
+        help=Option.MD_REPORT_SKIP_COLOR.help_msg
+        + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_SKIP_COLOR.envvar_str),
+    )
+    group.addoption(
+        Option.MD_REPORT_ERROR_COLOR.cmdoption_str,
+        default=None,
+        help=Option.MD_REPORT_ERROR_COLOR.help_msg
+        + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_ERROR_COLOR.envvar_str),
+    )
 
     parser.addini(
         Option.MD_REPORT.inioption_str, type="bool", default=False, help=Option.MD_REPORT.help_msg,
@@ -77,6 +95,21 @@ def pytest_addoption(parser):
     )
     parser.addini(
         Option.MD_REPORT_ZEROS.inioption_str, default=None, help=Option.MD_REPORT_ZEROS.help_msg
+    )
+    parser.addini(
+        Option.MD_REPORT_SUCCESS_COLOR.inioption_str,
+        default=None,
+        help=Option.MD_REPORT_SUCCESS_COLOR.help_msg,
+    )
+    parser.addini(
+        Option.MD_REPORT_SKIP_COLOR.inioption_str,
+        default=None,
+        help=Option.MD_REPORT_SKIP_COLOR.help_msg,
+    )
+    parser.addini(
+        Option.MD_REPORT_ERROR_COLOR.inioption_str,
+        default=None,
+        help=Option.MD_REPORT_ERROR_COLOR.help_msg,
     )
 
 
@@ -168,6 +201,21 @@ def retrieve_report_zeros(config: Config) -> str:
         report_zeros = Default.ZEROS
 
     return report_zeros
+
+
+def retrieve_report_results_color(config: Config, color_option: Option, default: str) -> str:
+    results_color = getattr(config.option, color_option.inioption_str)
+
+    if not results_color:
+        results_color = os.environ.get(color_option.envvar_str)
+
+    if not results_color:
+        results_color = config.getini(color_option.inioption_str)
+
+    if not results_color:
+        results_color = default
+
+    return results_color
 
 
 def _normalize_stat_name(name: str) -> str:
@@ -333,9 +381,15 @@ def make_md_report(
         writer.style_filter_kwargs = {
             "report_color": report_color,
             "color_map": {
-                FGColor.SUCCESS: Default.FGColor.SUCCESS,
-                FGColor.ERROR: Default.FGColor.ERROR,
-                FGColor.SKIP: Default.FGColor.SKIP,
+                FGColor.SUCCESS: retrieve_report_results_color(
+                    config, Option.MD_REPORT_SUCCESS_COLOR, Default.FGColor.SUCCESS
+                ),
+                FGColor.ERROR: retrieve_report_results_color(
+                    config, Option.MD_REPORT_ERROR_COLOR, Default.FGColor.ERROR
+                ),
+                FGColor.SKIP: retrieve_report_results_color(
+                    config, Option.MD_REPORT_SKIP_COLOR, Default.FGColor.SKIP
+                ),
                 FGColor.GRAYOUT: Default.FGColor.GRAYOUT,
             },
         }

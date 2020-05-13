@@ -2,6 +2,8 @@ import difflib
 import sys
 from textwrap import dedent
 
+import pytest
+
 
 PYFILE_PASS_TEST = dedent(
     """\
@@ -100,3 +102,17 @@ def test_pytest_md_report_zeros(testdir):
     print_test_result(expected=expected, actual=out)
 
     assert out == expected
+
+
+@pytest.mark.parametrize(
+    ["color_option"],
+    [["--md-report-success-color"], ["--md-report-skip-color"], ["--md-report-error-color"]],
+)
+def test_pytest_md_report_resu(testdir, color_option):
+    testdir.makepyfile(PYFILE_MIX_TESTS)
+    org_out = "\n".join(testdir.runpytest("--md-report").outlines[-4:])
+    ch_color_out = "\n".join(
+        testdir.runpytest("--md-report", color_option, "#ff2a2a").outlines[-4:]
+    )
+
+    assert org_out != ch_color_out

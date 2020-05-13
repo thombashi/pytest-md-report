@@ -2,6 +2,10 @@ from enum import Enum, unique
 from textwrap import dedent
 
 from pathvalidate import replace_symbol
+from tcolorpy import AnsiFGColor
+
+
+COLOR_NAMES = "/".join([style.name.lower() for style in list(AnsiFGColor)])
 
 
 class Header:
@@ -88,6 +92,36 @@ class Option(Enum):
             defaults to {default}.
             """
         ).format(default=Default.ZEROS),
+    )
+    MD_REPORT_SUCCESS_COLOR = (
+        "md-report-success-color",
+        dedent(
+            """\
+            text color of succeeded results.
+            specify a color name (one of the {names}) or a coor code (e.g. #ff1020).
+            defaults to {default}.
+            """
+        ).format(names=COLOR_NAMES, default=Default.FGColor.SUCCESS),
+    )
+    MD_REPORT_SKIP_COLOR = (
+        "md-report-skip-color",
+        dedent(
+            """\
+            text color of skipped results.
+            specify a color name (one of the {names}) or a coor code (e.g. #ff1020).
+            defaults to {default}.
+            """
+        ).format(names=COLOR_NAMES, default=Default.FGColor.SKIP),
+    )
+    MD_REPORT_ERROR_COLOR = (
+        "md-report-error-color",
+        dedent(
+            """\
+            text color of failed results.
+            specify a color name (one of the {names}) or a coor code (e.g. #ff1020).
+            defaults to {default}.
+            """
+        ).format(names=COLOR_NAMES, default=Default.FGColor.ERROR),
     )
 
     @property
