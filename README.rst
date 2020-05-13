@@ -112,6 +112,30 @@ Command options
                             render as a digit number (0). empty: not rendering.
                             defaults to number. you can also specify the value with
                             PYTEST_MD_REPORT_ZEROS environment variable.
+      --md-report-success-color=MD_REPORT_SUCCESS_COLOR
+                            text color of succeeded results. specify a color name
+                            (one of the black/red/green/yellow/blue/magenta/cyan/whi
+                            te/lightblack/lightred/lightgreen/lightyellow/lightblue/
+                            lightmagenta/lightcyan/lightwhite) or a coor code (e.g.
+                            #ff1020). defaults to light_green. you can also specify
+                            the value with PYTEST_MD_REPORT_SUCCESS_COLOR
+                            environment variable.
+      --md-report-skip-color=MD_REPORT_SKIP_COLOR
+                            text color of skipped results. specify a color name (one
+                            of the black/red/green/yellow/blue/magenta/cyan/white/li
+                            ghtblack/lightred/lightgreen/lightyellow/lightblue/light
+                            magenta/lightcyan/lightwhite) or a coor code (e.g.
+                            #ff1020). defaults to light_yellow. you can also specify
+                            the value with PYTEST_MD_REPORT_SKIP_COLOR environment
+                            variable.
+      --md-report-error-color=MD_REPORT_ERROR_COLOR
+                            text color of failed results. specify a color name (one
+                            of the black/red/green/yellow/blue/magenta/cyan/white/li
+                            ghtblack/lightred/lightgreen/lightyellow/lightblue/light
+                            magenta/lightcyan/lightwhite) or a coor code (e.g.
+                            #ff1020). defaults to light_red. you can also specify
+                            the value with PYTEST_MD_REPORT_ERROR_COLOR environment
+                            variable.
 
 ini-options
 --------------------------------------------
@@ -134,6 +158,24 @@ ini-options
                         rendering method for results of zero values. number:
                         render as a digit number (0). empty: not rendering.
                         defaults to number.
+  md_report_success_color (string):
+                        text color of succeeded results. specify a color name
+                        (one of the black/red/green/yellow/blue/magenta/cyan/whi
+                        te/lightblack/lightred/lightgreen/lightyellow/lightblue/
+                        lightmagenta/lightcyan/lightwhite) or a coor code (e.g.
+                        #ff1020). defaults to light_green.
+  md_report_skip_color (string):
+                        text color of skipped results. specify a color name (one
+                        of the black/red/green/yellow/blue/magenta/cyan/white/li
+                        ghtblack/lightred/lightgreen/lightyellow/lightblue/light
+                        magenta/lightcyan/lightwhite) or a coor code (e.g.
+                        #ff1020). defaults to light_yellow.
+  md_report_error_color (string):
+                        text color of failed results. specify a color name (one
+                        of the black/red/green/yellow/blue/magenta/cyan/white/li
+                        ghtblack/lightred/lightgreen/lightyellow/lightblue/light
+                        magenta/lightcyan/lightwhite) or a coor code (e.g.
+                        #ff1020). defaults to light_red.
 
 Example of ``setup.cfg``:
 
