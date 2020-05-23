@@ -275,6 +275,9 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
         return Style(font_weight="bold")
 
     retriever = ColorRetriever(cell.row, is_grayout, report_color, color_map)
+    is_passed = False
+    is_failed = False
+    is_skipped = False
 
     headers = writer.headers
     if headers[cell.col] in (Header.FILEPATH, Header.TESTFUNC):
@@ -284,10 +287,6 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
                 writer.value_matrix[cell.row][headers.index("error")],
             ]
         )
-        if error_count > 0:
-            fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.ERROR])
-            return Style(color=fg_color, bg_color=bg_color)
-
         skip_count = sum(
             [
                 writer.value_matrix[cell.row][headers.index("skipped")],
@@ -295,18 +294,16 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
                 writer.value_matrix[cell.row][headers.index("xpassed")],
             ]
         )
-        if skip_count > 0:
-            fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.SKIP])
-            return Style(color=fg_color, bg_color=bg_color)
 
-        fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.SUCCESS])
-        return Style(color=fg_color, bg_color=bg_color)
+        is_failed = error_count > 0
+        is_skipped = skip_count > 0
+        is_passed = error_count == 0 and skip_count == 0
 
-    if headers[cell.col] in ("passed"):
+    if is_passed or headers[cell.col] in ("passed"):
         fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.SUCCESS])
-    elif headers[cell.col] in ("failed", "error"):
+    elif is_failed or headers[cell.col] in ("failed", "error"):
         fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.ERROR])
-    if headers[cell.col] in ("skipped", "xfailed", "xpassed"):
+    if is_skipped or headers[cell.col] in ("skipped", "xfailed", "xpassed"):
         fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.SKIP])
 
     return Style(color=fg_color, bg_color=bg_color)
