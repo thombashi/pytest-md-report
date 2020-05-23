@@ -333,7 +333,6 @@ def col_separator_style_filter(
 def make_md_report(
     config: Config, reporter: TerminalReporter, total_stats: Mapping[str, int]
 ) -> str:
-    verbosity_level = 1
     verbosity_level = retrieve_verbosity_level(config)
 
     outcomes = ["passed", "failed", "error", "skipped", "xfailed", "xpassed"]
