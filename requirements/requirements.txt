@@ -1,4 +1,4 @@
 pathvalidate>=2.3.0,<3
-pytablewriter>=0.53.0,<1
+pytablewriter>=0.54.0,<1
 pytest>=3.3.2,<6
 typepy>=1.1.1,<2
