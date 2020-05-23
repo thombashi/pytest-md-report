@@ -261,6 +261,7 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
     writer = kwargs["writer"]
     report_color = kwargs["report_color"]
     color_map = kwargs["color_map"]
+    num_rows = kwargs["num_rows"]
     fg_color = None
     bg_color = None
 
@@ -303,8 +304,11 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
         fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.SUCCESS])
     elif is_failed or headers[cell.col] in ("failed", "error"):
         fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.ERROR])
-    if is_skipped or headers[cell.col] in ("skipped", "xfailed", "xpassed"):
+    elif is_skipped or headers[cell.col] in ("skipped", "xfailed", "xpassed"):
         fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.SKIP])
+
+    if cell.row == num_rows - 1:
+        bg_color = BGColor.TOTAL_ROW
 
     return Style(color=fg_color, bg_color=bg_color)
 
@@ -312,11 +316,14 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
 def col_separator_style_filter(
     left_cell: Optional[Cell], right_cell: Optional[Cell], **kwargs: Any
 ) -> Optional[Style]:
+    num_rows = kwargs["num_rows"]
     fg_color = None
     bg_color = None
     row = left_cell.row if left_cell else cast(Cell, right_cell).row
 
-    if row % 2 == 0:
+    if row == num_rows - 1:
+        bg_color = BGColor.TOTAL_ROW
+    elif row % 2 == 0:
         bg_color = BGColor.EVEN_ROW
     elif row >= 0:
         bg_color = BGColor.ODD_ROW
@@ -388,6 +395,7 @@ def make_md_report(
                 ),
                 FGColor.GRAYOUT: Default.FGColor.GRAYOUT,
             },
+            "num_rows": len(writer.value_matrix),
         }
         writer.add_style_filter(style_filter)
 

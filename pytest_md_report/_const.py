@@ -36,6 +36,7 @@ class FGColor:
 class BGColor:
     EVEN_ROW = "#202020"
     ODD_ROW = "black"
+    TOTAL_ROW = "#000000"
 
 
 class Default:
