@@ -79,7 +79,7 @@ def test_pytest_md_report_margin(testdir):
         |test_pytest_md_report_margin.py|     1|     1|    1|      1|      1|      1|
         |TOTAL                          |     1|     1|    1|      1|      1|      1|"""
     )
-    result = testdir.runpytest("--md-report", "--md-report-color", "never", "--md-report-margin", 0)
+    result = testdir.runpytest("--md-report", "--md-report-color", "never", "--md-report-margin", "0")
     out = "\n".join(result.outlines[-4:])
     print_test_result(expected=expected, actual=out)
 
