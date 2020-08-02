@@ -189,8 +189,5 @@ Example of ``setup.cfg``:
 
 Dependencies
 ============================================
-Python 3.5+
-
-- `pytablewriter <https://github.com/thombashi/pytablewriter>`__
-- `pytest <https://docs.pytest.org/en/latest/>`__
-- `typepy <https://github.com/thombashi/typepy>`__
+- Python 3.5+
+- `Python package dependencies (automatically installed) <https://github.com/thombashi/pytest-md-report/network/dependencies>`__
