@@ -139,7 +139,7 @@ Command options
 
 ini-options
 --------------------------------------------
-[pytest] ini-options in the first pytest.ini|tox.ini|setup.cfg file found:
+[pytest] ini-options in the first ``pytest.ini``/``tox.ini``/``setup.cfg``/``pyproject.toml``(isort 5.0.0 or later) file found:
 
 ::
 
@@ -177,14 +177,22 @@ ini-options
                         magenta/lightcyan/lightwhite) or a coor code (e.g.
                         #ff1020). defaults to light_red.
 
-Example of ``setup.cfg``:
 
-::
+:Example of ``pyproject.toml``:
+    .. code-block:: toml
 
-    [tool:pytest]
-    md_report = True
-    md_report_verbose = 0
-    md_report_color = auto
+        [tool.pytest.ini_options]
+        md_report = true
+        md_report_verbose = 0
+        md_report_color = "auto"
+
+:Example of ``setup.cfg``:
+    .. code-block:: ini
+
+        [tool:pytest]
+        md_report = True
+        md_report_verbose = 0
+        md_report_color = auto
 
 
 Dependencies
