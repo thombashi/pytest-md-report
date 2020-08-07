@@ -225,7 +225,7 @@ def _normalize_stat_name(name: str) -> str:
     return name
 
 
-def _retrieve_stat_count_map(reporter: TerminalReporter) -> Dict[str, int]:
+def retrieve_stat_count_map(reporter: TerminalReporter) -> Dict[str, int]:
     stat_count_map = {}
 
     for name in ["failed", "passed", "skipped", "error", "xfailed", "xpassed"]:
@@ -414,5 +414,5 @@ def pytest_unconfigure(config):
         return
 
     reporter = config.pluginmanager.get_plugin("terminalreporter")
-    stat_count_map = _retrieve_stat_count_map(reporter)
+    stat_count_map = retrieve_stat_count_map(reporter)
     reporter._tw.write(make_md_report(config, reporter, stat_count_map))
