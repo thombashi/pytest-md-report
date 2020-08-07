@@ -139,7 +139,7 @@ Command options
 
 ini-options
 --------------------------------------------
-[pytest] ini-options in the first ``pytest.ini``/``tox.ini``/``setup.cfg``/``pyproject.toml``(isort 5.0.0 or later) file found:
+[pytest] ini-options in the first ``pytest.ini``/``tox.ini``/``setup.cfg``/``pyproject.toml``(pytest 6.0.0 or later) file found:
 
 ::
 
