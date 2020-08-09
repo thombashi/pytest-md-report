@@ -133,6 +133,24 @@ def is_make_md_report(config: Config) -> bool:
     return make_report
 
 
+def _is_ci() -> bool:
+    CI = os.environ.get("CI")
+
+    return CI and CI.lower() == "true"
+
+
+def _is_travis_ci() -> bool:
+    # https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
+    return os.environ.get("TRAVIS") == "true"
+
+
+def _is_appveyor_ci() -> bool:
+    # https://www.appveyor.com/docs/environment-variables/
+    APPVEYOR = os.environ.get("APPVEYOR")
+
+    return APPVEYOR and APPVEYOR.lower() == "true"
+
+
 def _to_int(value) -> Optional[int]:
     try:
         return Integer(value, strict_level=StrictLevel.MIN).convert()
@@ -196,6 +214,9 @@ def retrieve_report_zeros(config: Config) -> str:
 
     if not report_zeros:
         report_zeros = config.getini(Option.MD_REPORT_ZEROS.inioption_str)
+
+    if not report_zeros and _is_ci():
+        report_zeros = ZerosRender.EMPTY
 
     if not report_zeros:
         report_zeros = Default.ZEROS
@@ -397,9 +418,11 @@ def make_md_report(
             },
             "num_rows": len(writer.value_matrix),
         }
-        writer.add_style_filter(style_filter)
 
-        if report_color == ColorPoicy.AUTO:
+        if not _is_travis_ci():
+            writer.add_style_filter(style_filter)
+
+        if report_color == ColorPoicy.AUTO and not _is_ci():
             writer.add_col_separator_style_filter(col_separator_style_filter)
 
     report_zeros = retrieve_report_zeros(config)
