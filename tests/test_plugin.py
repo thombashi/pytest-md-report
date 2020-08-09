@@ -110,7 +110,7 @@ def test_pytest_md_report_zeros(testdir):
     ["color_option"],
     [["--md-report-success-color"], ["--md-report-skip-color"], ["--md-report-error-color"]],
 )
-def test_pytest_md_report_resu(testdir, color_option):
+def test_pytest_md_report_results_color(testdir, color_option):
     testdir.makepyfile(PYFILE_MIX_TESTS)
     org_out = "\n".join(testdir.runpytest("--md-report").outlines[-4:])
     ch_color_out = "\n".join(
