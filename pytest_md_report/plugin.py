@@ -303,23 +303,26 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
 
     headers = writer.headers
     if headers[cell.col] in (Header.FILEPATH, Header.TESTFUNC, Header.SUBTOTAL):
-        error_count = sum(
-            [
-                writer.value_matrix[cell.row][headers.index("failed")],
-                writer.value_matrix[cell.row][headers.index("error")],
-            ]
-        )
-        skip_count = sum(
-            [
-                writer.value_matrix[cell.row][headers.index("skipped")],
-                writer.value_matrix[cell.row][headers.index("xfailed")],
-                writer.value_matrix[cell.row][headers.index("xpassed")],
-            ]
-        )
+        error_ct_list = []
+        if "failed" in headers:
+            error_ct_list.append(writer.value_matrix[cell.row][headers.index("failed")])
+        if "error" in headers:
+            error_ct_list.append(writer.value_matrix[cell.row][headers.index("error")])
 
-        is_failed = error_count > 0
-        is_skipped = skip_count > 0
-        is_passed = error_count == 0 and skip_count == 0
+        skip_ct_list = []
+        if "skipped" in headers:
+            skip_ct_list.append(writer.value_matrix[cell.row][headers.index("skipped")])
+        if "xfailed" in headers:
+            skip_ct_list.append(writer.value_matrix[cell.row][headers.index("xfailed")])
+        if "xpassed" in headers:
+            skip_ct_list.append(writer.value_matrix[cell.row][headers.index("xpassed")])
+
+        error_ct = sum(error_ct_list)
+        skip_ct = sum(skip_ct_list)
+
+        is_failed = error_ct > 0
+        is_skipped = skip_ct > 0
+        is_passed = error_ct == 0 and skip_ct == 0
 
     if is_passed or headers[cell.col] in ("passed"):
         fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.SUCCESS])
@@ -361,6 +364,7 @@ def make_md_report(
     verbosity_level = retrieve_verbosity_level(config)
 
     outcomes = ["passed", "failed", "error", "skipped", "xfailed", "xpassed"]
+    outcomes = [key for key in outcomes if total_stats.get(key, 0) > 0]
     results_per_testfunc = {}  # type: Dict[Tuple, Dict[str, int]]
 
     for stat_key, values in reporter.stats.items():

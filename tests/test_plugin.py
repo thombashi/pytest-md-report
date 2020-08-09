@@ -13,6 +13,14 @@ PYFILE_PASS_TEST = dedent(
         assert True
     """
 )
+PYFILE_SKIP_TEST = dedent(
+    """\
+    import pytest
+
+    def test_skipped():
+        pytest.skip()
+    """
+)
 PYFILE_MIX_TESTS = dedent(
     """\
     import pytest
@@ -89,18 +97,21 @@ def test_pytest_md_report_margin(testdir):
 
 
 def test_pytest_md_report_zeros(testdir):
-    testdir.makepyfile(PYFILE_PASS_TEST)
+    testdir.makepyfile(test_passed=PYFILE_PASS_TEST)
+    testdir.makepyfile(test_skipped=PYFILE_SKIP_TEST)
+
     expected = dedent(
         """\
-        |            filepath            | passed | failed | error | skipped | xfailed | xpassed | SUBTOTAL |
-        |--------------------------------|-------:|--------|-------|---------|---------|---------|---------:|
-        | test_pytest_md_report_zeros.py |      1 |        |       |         |         |         |        1 |
-        | TOTAL                          |      1 |        |       |         |         |         |        1 |"""
+        |    filepath     | passed | skipped | SUBTOTAL |
+        |-----------------|-------:|--------:|---------:|
+        | test_passed.py  |      1 |         |        1 |
+        | test_skipped.py |        |       1 |        1 |
+        | TOTAL           |      1 |       1 |        2 |"""
     )
     result = testdir.runpytest(
         "--md-report", "--md-report-color", "never", "--md-report-zeros", "empty"
     )
-    out = "\n".join(result.outlines[-4:])
+    out = "\n".join(result.outlines[-5:])
     print_test_result(expected=expected, actual=out)
 
     assert out == expected
