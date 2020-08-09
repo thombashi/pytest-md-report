@@ -1,4 +1,5 @@
 pathvalidate>=2.1.0,<3
 pytablewriter>=0.54.0,<1
 pytest>=3.3.2,<7,!=6.0.0
+tcolorpy>=0.0.5,<1
 typepy>=1.1.1,<2
