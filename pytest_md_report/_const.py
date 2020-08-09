@@ -90,7 +90,7 @@ class Option(Enum):
             rendering method for results of zero values.
             number: render as a digit number (0).
             empty: not rendering.
-            defaults to {default}.
+            defaults to {default}. defaults to empty when execution in ci.
             """
         ).format(default=Default.ZEROS),
     )
