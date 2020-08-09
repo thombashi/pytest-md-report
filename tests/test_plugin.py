@@ -58,10 +58,10 @@ def test_pytest_md_report(testdir):
     testdir.makepyfile(PYFILE_MIX_TESTS)
     expected = dedent(
         """\
-        |         filepath         | passed | failed | error | skipped | xfailed | xpassed |
-        |--------------------------|-------:|-------:|------:|--------:|--------:|--------:|
-        | test_pytest_md_report.py |      1 |      1 |     1 |       1 |       1 |       1 |
-        | TOTAL                    |      1 |      1 |     1 |       1 |       1 |       1 |"""
+        |         filepath         | passed | failed | error | skipped | xfailed | xpassed | SUBTOTAL |
+        |--------------------------|-------:|-------:|------:|--------:|--------:|--------:|---------:|
+        | test_pytest_md_report.py |      1 |      1 |     1 |       1 |       1 |       1 |        6 |
+        | TOTAL                    |      1 |      1 |     1 |       1 |       1 |       1 |        6 |"""
     )
     result = testdir.runpytest("--md-report", "--md-report-color", "never")
     out = "\n".join(result.outlines[-4:])
@@ -74,10 +74,10 @@ def test_pytest_md_report_margin(testdir):
     testdir.makepyfile(PYFILE_MIX_TESTS)
     expected = dedent(
         """\
-        |           filepath            |passed|failed|error|skipped|xfailed|xpassed|
-        |-------------------------------|-----:|-----:|----:|------:|------:|------:|
-        |test_pytest_md_report_margin.py|     1|     1|    1|      1|      1|      1|
-        |TOTAL                          |     1|     1|    1|      1|      1|      1|"""
+        |           filepath            |passed|failed|error|skipped|xfailed|xpassed|SUBTOTAL|
+        |-------------------------------|-----:|-----:|----:|------:|------:|------:|-------:|
+        |test_pytest_md_report_margin.py|     1|     1|    1|      1|      1|      1|       6|
+        |TOTAL                          |     1|     1|    1|      1|      1|      1|       6|"""
     )
     result = testdir.runpytest(
         "--md-report", "--md-report-color", "never", "--md-report-margin", "0"
@@ -92,10 +92,10 @@ def test_pytest_md_report_zeros(testdir):
     testdir.makepyfile(PYFILE_PASS_TEST)
     expected = dedent(
         """\
-        |            filepath            | passed | failed | error | skipped | xfailed | xpassed |
-        |--------------------------------|-------:|--------|-------|---------|---------|---------|
-        | test_pytest_md_report_zeros.py |      1 |        |       |         |         |         |
-        | TOTAL                          |      1 |        |       |         |         |         |"""
+        |            filepath            | passed | failed | error | skipped | xfailed | xpassed | SUBTOTAL |
+        |--------------------------------|-------:|--------|-------|---------|---------|---------|---------:|
+        | test_pytest_md_report_zeros.py |      1 |        |       |         |         |         |        1 |
+        | TOTAL                          |      1 |        |       |         |         |         |        1 |"""
     )
     result = testdir.runpytest(
         "--md-report", "--md-report-color", "never", "--md-report-zeros", "empty"

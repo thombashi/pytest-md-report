@@ -302,7 +302,7 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
     is_skipped = False
 
     headers = writer.headers
-    if headers[cell.col] in (Header.FILEPATH, Header.TESTFUNC):
+    if headers[cell.col] in (Header.FILEPATH, Header.TESTFUNC, Header.SUBTOTAL):
         error_count = sum(
             [
                 writer.value_matrix[cell.row][headers.index("failed")],
@@ -387,15 +387,15 @@ def make_md_report(
     writer = TableWriterFactory.create_from_format_name("md")
 
     matrix = [
-        list(key) + [results.get(key, 0) for key in outcomes]  # type: ignore
+        list(key) + [results.get(key, 0) for key in outcomes] + [sum(results.values())]  # type: ignore
         for key, results in results_per_testfunc.items()
     ]
     if verbosity_level == 0:
-        writer.headers = [Header.FILEPATH] + outcomes
-        matrix.append(["TOTAL"] + [total_stats.get(key, 0) for key in outcomes])  # type: ignore
+        writer.headers = [Header.FILEPATH] + outcomes + [Header.SUBTOTAL]
+        matrix.append(["TOTAL"] + [total_stats.get(key, 0) for key in outcomes] + [sum(total_stats.values())])  # type: ignore
     elif verbosity_level >= 1:
-        writer.headers = [Header.FILEPATH, Header.TESTFUNC] + outcomes
-        matrix.append(["TOTAL", ""] + [total_stats.get(key, 0) for key in outcomes])  # type: ignore
+        writer.headers = [Header.FILEPATH, Header.TESTFUNC] + outcomes + [Header.SUBTOTAL]
+        matrix.append(["TOTAL", ""] + [total_stats.get(key, 0) for key in outcomes] + [sum(total_stats.values())])  # type: ignore
 
     writer.margin = retrieve_report_margin(config)
     writer.value_matrix = matrix

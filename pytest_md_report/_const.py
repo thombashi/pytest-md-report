@@ -11,6 +11,7 @@ COLOR_NAMES = "/".join([style.name.lower() for style in list(AnsiFGColor)])
 class Header:
     FILEPATH = "filepath"
     TESTFUNC = "function"
+    SUBTOTAL = "SUBTOTAL"
 
 
 class ColorPoicy:
