@@ -61,7 +61,7 @@ class Option(Enum):
             """\
             verbosity level for pytest-md-report. if not set, using verbosity level of pytest.
             defaults to 0.
-        """
+            """
         ),
     )
     MD_REPORT_COLOR = (
