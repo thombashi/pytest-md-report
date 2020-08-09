@@ -70,15 +70,15 @@ Not rendering results of zero value (``--md-report-zeros emmpty`` option):
 
 ::
 
-    |         filepath         | passed | failed | error | skipped | xfailed | xpassed |
-    |--------------------------|-------:|-------:|------:|--------:|--------:|--------:|
-    | examples/test_error.py   |        |        |     2 |         |         |         |
-    | examples/test_failed.py  |        |      2 |       |         |         |         |
-    | examples/test_pass.py    |      2 |        |       |         |         |         |
-    | examples/test_skipped.py |        |        |       |       2 |         |         |
-    | examples/test_xfailed.py |        |        |       |         |       2 |         |
-    | examples/test_xpassed.py |        |        |       |         |         |       2 |
-    | TOTAL                    |      2 |      2 |     2 |       2 |       2 |       2 |
+    |         filepath         | passed | failed | error | skipped | xfailed | xpassed | SUBTOTAL |
+    |--------------------------|-------:|-------:|------:|--------:|--------:|--------:|---------:|
+    | examples/test_error.py   |        |        |     2 |         |         |         |        2 |
+    | examples/test_failed.py  |        |      2 |       |         |         |         |        2 |
+    | examples/test_pass.py    |      2 |        |       |         |         |         |        2 |
+    | examples/test_skipped.py |        |        |       |       2 |         |         |        2 |
+    | examples/test_xfailed.py |        |        |       |         |       2 |         |        2 |
+    | examples/test_xpassed.py |        |        |       |         |         |       2 |        2 |
+    | TOTAL                    |      2 |      2 |     2 |       2 |       2 |       2 |       12 |
 
 
 Options
