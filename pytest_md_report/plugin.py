@@ -114,6 +114,9 @@ def pytest_addoption(parser):
 
 
 def is_make_md_report(config: Config) -> bool:
+    if config.option.help:
+        return False
+
     make_report = config.option.md_report
 
     if make_report is None:
