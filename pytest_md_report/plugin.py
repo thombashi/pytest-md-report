@@ -10,7 +10,7 @@ from pytablewriter.style import Cell, Style
 from typepy import Bool, Integer, StrictLevel
 from typepy.error import TypeConversionError
 
-from ._const import BGColor, ColorPoicy, Default, FGColor, Header, HelpMsg, Option, ZerosRender
+from ._const import BGColor, ColorPolicy, Default, FGColor, Header, HelpMsg, Option, ZerosRender
 
 
 def zero_to_nullstr(value) -> str:
@@ -40,7 +40,7 @@ def pytest_addoption(parser):
     )
     group.addoption(
         Option.MD_REPORT_COLOR.cmdoption_str,
-        choices=ColorPoicy.LIST,
+        choices=ColorPolicy.LIST,
         default=None,
         help=Option.MD_REPORT_COLOR.help_msg
         + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_COLOR.envvar_str),
@@ -273,10 +273,10 @@ class ColorRetriever:
 
         if (self.__row % 2) == 0:
             fg_color = self.__color_map[FGColor.GRAYOUT] if self.__is_grayout else base_color
-            bg_color = BGColor.EVEN_ROW if self.__report_color == ColorPoicy.AUTO else None
+            bg_color = BGColor.EVEN_ROW if self.__report_color == ColorPolicy.AUTO else None
         else:
             fg_color = self.__color_map[FGColor.GRAYOUT] if self.__is_grayout else base_color
-            bg_color = BGColor.ODD_ROW if self.__report_color == ColorPoicy.AUTO else None
+            bg_color = BGColor.ODD_ROW if self.__report_color == ColorPolicy.AUTO else None
 
         return (fg_color, bg_color)
 
@@ -408,7 +408,7 @@ def make_md_report(
     writer.value_matrix = matrix
 
     report_color = retrieve_report_color(config)
-    if report_color != ColorPoicy.NEVER:
+    if report_color != ColorPolicy.NEVER:
         writer.style_filter_kwargs = {
             "report_color": report_color,
             "color_map": {
@@ -429,7 +429,7 @@ def make_md_report(
         if not _is_travis_ci():
             writer.add_style_filter(style_filter)
 
-        if report_color == ColorPoicy.AUTO and not _is_ci():
+        if report_color == ColorPolicy.AUTO and not _is_ci():
             writer.add_col_separator_style_filter(col_separator_style_filter)
 
     report_zeros = retrieve_report_zeros(config)

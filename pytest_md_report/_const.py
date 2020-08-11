@@ -14,7 +14,7 @@ class Header:
     SUBTOTAL = "SUBTOTAL"
 
 
-class ColorPoicy:
+class ColorPolicy:
     AUTO = "auto"
     TEXT = "text"
     NEVER = "never"
@@ -41,7 +41,7 @@ class BGColor:
 
 
 class Default:
-    COLOR = ColorPoicy.AUTO
+    COLOR = ColorPolicy.AUTO
     MARGIN = 1
     ZEROS = ZerosRender.NUMBER
 
