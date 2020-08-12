@@ -1,7 +1,6 @@
 import os
 from collections import defaultdict
-from typing import Mapping  # noqa
-from typing import Any, Dict, Optional, Tuple, cast
+from typing import Any, Dict, Mapping, Optional, Sequence, Tuple, cast
 
 from _pytest.config import Config
 from _pytest.terminal import TerminalReporter
@@ -365,13 +364,9 @@ def col_separator_style_filter(
     return None
 
 
-def make_md_report(
-    config: Config, reporter: TerminalReporter, total_stats: Mapping[str, int]
-) -> str:
-    verbosity_level = retrieve_verbosity_level(config)
-
-    outcomes = ["passed", "failed", "error", "skipped", "xfailed", "xpassed"]
-    outcomes = [key for key in outcomes if total_stats.get(key, 0) > 0]
+def extract_pytest_stats(
+    reporter: TerminalReporter, outcomes: Sequence[str], verbosity_level: int
+) -> Mapping[Tuple, Mapping[str, int]]:
     results_per_testfunc = {}  # type: Dict[Tuple, Dict[str, int]]
 
     for stat_key, values in reporter.stats.items():
@@ -394,6 +389,20 @@ def make_md_report(
             if key not in results_per_testfunc:
                 results_per_testfunc[key] = defaultdict(int)
             results_per_testfunc[key][stat_key] += 1
+
+    return results_per_testfunc
+
+
+def make_md_report(
+    config: Config, reporter: TerminalReporter, total_stats: Mapping[str, int]
+) -> str:
+    verbosity_level = retrieve_verbosity_level(config)
+
+    outcomes = ["passed", "failed", "error", "skipped", "xfailed", "xpassed"]
+    outcomes = [key for key in outcomes if total_stats.get(key, 0) > 0]
+    results_per_testfunc = extract_pytest_stats(
+        reporter=reporter, outcomes=outcomes, verbosity_level=verbosity_level
+    )
 
     writer = TableWriterFactory.create_from_format_name("md")
 
