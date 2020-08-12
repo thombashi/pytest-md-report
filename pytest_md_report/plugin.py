@@ -138,8 +138,10 @@ def is_make_md_report(config: Config) -> bool:
 
 def _is_ci() -> bool:
     CI = os.environ.get("CI")
+    if not CI:
+        return False
 
-    return CI and CI.lower() == "true"
+    return CI.lower() == "true"
 
 
 def _is_travis_ci() -> bool:
@@ -150,8 +152,10 @@ def _is_travis_ci() -> bool:
 def _is_appveyor_ci() -> bool:
     # https://www.appveyor.com/docs/environment-variables/
     APPVEYOR = os.environ.get("APPVEYOR")
+    if not APPVEYOR:
+        return False
 
-    return APPVEYOR and APPVEYOR.lower() == "true"
+    return APPVEYOR.lower() == "true"
 
 
 def _to_int(value) -> Optional[int]:
