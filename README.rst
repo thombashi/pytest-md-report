@@ -41,7 +41,7 @@ Usage
 
     $ pytest --md-report examples/
 
-.. figure:: ss/pytest_md_report_example.png
+.. figure:: https://cdn.jsdelivr.net/gh/thombashi/pytest-md-report@master/ss/pytest_md_report_example.png
     :scale: 80%
     :alt: https://github.com/thombashi/pytest-md-report/blob/master/ss/pytest_md_report_example.png
 
@@ -56,7 +56,7 @@ Increase verbosity level (``--md-report-verbose`` option):
 
     $ pytest --md-report --md-report-verbose=1 examples/
 
-.. figure:: ss/pytest_md_report_example_verbose.png
+.. figure:: https://cdn.jsdelivr.net/gh/thombashi/pytest-md-report@master/ss/pytest_md_report_example_verbose.png
     :scale: 80%
     :alt: https://github.com/thombashi/pytest-md-report/blob/master/ss/pytest_md_report_example_verbose.png
 
