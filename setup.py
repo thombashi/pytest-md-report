@@ -56,6 +56,7 @@ setuptools.setup(
     extras_require={"test": TESTS_REQUIRES},
     classifiers=[
         "Development Status :: 4 - Beta",
+        "Environment :: Plugins",
         "Framework :: Pytest",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
@@ -69,7 +70,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
-        "Programming Language :: Python :: 3 :: Only",
         "Topic :: Software Development :: Testing",
     ],
     cmdclass=get_release_command_class(),
