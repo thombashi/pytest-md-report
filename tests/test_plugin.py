@@ -67,7 +67,7 @@ def test_pytest_md_report(testdir):
     expected = dedent(
         """\
         |         filepath         | passed | failed | error | skipped | xfailed | xpassed | SUBTOTAL |
-        |--------------------------|-------:|-------:|------:|--------:|--------:|--------:|---------:|
+        | ------------------------ | -----: | -----: | ----: | ------: | ------: | ------: | -------: |
         | test_pytest_md_report.py |      1 |      1 |     1 |       1 |       1 |       1 |        6 |
         | TOTAL                    |      1 |      1 |     1 |       1 |       1 |       1 |        6 |"""
     )
@@ -103,7 +103,7 @@ def test_pytest_md_report_zeros(testdir):
     expected = dedent(
         """\
         |    filepath     | passed | skipped | SUBTOTAL |
-        |-----------------|-------:|--------:|---------:|
+        | --------------- | -----: | ------: | -------: |
         | test_passed.py  |      1 |         |        1 |
         | test_skipped.py |        |       1 |        1 |
         | TOTAL           |      1 |       1 |        2 |"""
