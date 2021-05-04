@@ -17,13 +17,9 @@ Summary
     :target: https://pypi.org/project/pytest-md-report
     :alt: Supported Python implementations
 
-.. image:: https://img.shields.io/travis/thombashi/pytest-md-report/master.svg?label=Linux/macOS%20CI
-    :target: https://travis-ci.org/thombashi/pytest-md-report
-    :alt: Linux/macOS CI status
-
-.. image:: https://img.shields.io/appveyor/ci/thombashi/pytest-md-report/master.svg?label=Windows%20CI
-    :target: https://ci.appveyor.com/project/thombashi/pytest-md-report/branch/master
-    :alt: Windows CI status
+.. image:: https://github.com/thombashi/pytest-md-report/workflows/Tests/badge.svg
+    :target: https://github.com/thombashi/pytest-md-report/actions?query=workflow%3ATests
+    :alt: Linux/macOS/Windows CI status
 
 A pytest plugin to make a test results report with Markdown table format.
 
@@ -39,7 +35,7 @@ Usage
 ============================================
 ::
 
-    $ pytest --md-report examples/
+    pytest --md-report examples/
 
 .. figure:: https://cdn.jsdelivr.net/gh/thombashi/pytest-md-report@master/ss/pytest_md_report_example.png
     :scale: 80%
@@ -54,7 +50,7 @@ Increase verbosity level (``--md-report-verbose`` option):
 
 ::
 
-    $ pytest --md-report --md-report-verbose=1 examples/
+    pytest --md-report --md-report-verbose=1 examples/
 
 .. figure:: https://cdn.jsdelivr.net/gh/thombashi/pytest-md-report@master/ss/pytest_md_report_example_verbose.png
     :scale: 80%
@@ -66,12 +62,12 @@ Not rendering results of zero value (``--md-report-zeros emmpty`` option):
 
 ::
 
-    $ pytest --md-report --md-report-zeros empty --md-report-color never examples/
+    pytest --md-report --md-report-zeros empty --md-report-color never examples/
 
 ::
 
     |         filepath         | passed | failed | error | skipped | xfailed | xpassed | SUBTOTAL |
-    |--------------------------|-------:|-------:|------:|--------:|--------:|--------:|---------:|
+    | ------------------------ | -----: | -----: | ----: | ------: | ------: | ------: | -------: |
     | examples/test_error.py   |        |        |     2 |         |         |         |        2 |
     | examples/test_failed.py  |        |      2 |       |         |         |         |        2 |
     | examples/test_pass.py    |      2 |        |       |         |         |         |        2 |
@@ -93,49 +89,59 @@ Command options
                             with PYTEST_MD_REPORT environment variable.
       --md-report-verbose=VERBOSITY_LEVEL
                             verbosity level for pytest-md-report. if not set, using
-                            verbosity level of pytest. defaults to 0. you can also
-                            specify the value with PYTEST_MD_REPORT_VERBOSE
-                            environment variable.
+                            verbosity level of pytest.
+                            defaults to 0.
+                            you can also specify the value with
+                            PYTEST_MD_REPORT_VERBOSE environment variable.
       --md-report-color={auto,text,never}
                             auto: display colored (text and background) reports by
-                            using ANSI escape codes. text: display colored (text)
-                            reports by using ANSI escape codes. never: display
-                            report without color. defaults to 'auto'. you can also
-                            specify the value with PYTEST_MD_REPORT_COLOR
-                            environment variable.
+                            using ANSI escape codes.
+                            text: display colored (text) reports by using ANSI
+                            escape codes.
+                            never: display report without color.
+                            defaults to 'auto'.
+                            you can also specify the value with
+                            PYTEST_MD_REPORT_COLOR environment variable.
       --md-report-margin=MARGIN
-                            margin size for each cells. defaults to 1. you can also
-                            specify the value with PYTEST_MD_REPORT_MARGIN
-                            environment variable.
+                            margin size for each cells.
+                            defaults to 1.
+                            you can also specify the value with
+                            PYTEST_MD_REPORT_MARGIN environment variable.
       --md-report-zeros={number,empty}
-                            rendering method for results of zero values. number:
-                            render as a digit number (0). empty: not rendering.
-                            defaults to number. you can also specify the value with
+                            rendering method for results of zero values.
+                            number: render as a digit number (0).
+                            empty: not rendering.
+                            defaults to number. defaults to empty when execution in
+                            ci.
+                            you can also specify the value with
                             PYTEST_MD_REPORT_ZEROS environment variable.
       --md-report-success-color=MD_REPORT_SUCCESS_COLOR
-                            text color of succeeded results. specify a color name
-                            (one of the black/red/green/yellow/blue/magenta/cyan/whi
-                            te/lightblack/lightred/lightgreen/lightyellow/lightblue/
-                            lightmagenta/lightcyan/lightwhite) or a coor code (e.g.
-                            #ff1020). defaults to light_green. you can also specify
-                            the value with PYTEST_MD_REPORT_SUCCESS_COLOR
-                            environment variable.
+                            text color of succeeded results.
+                            specify a color name (one of the black/red/green/yellow/
+                            blue/magenta/cyan/white/lightblack/lightred/lightgreen/l
+                            ightyellow/lightblue/lightmagenta/lightcyan/lightwhite)
+                            or a coor code (e.g. #ff1020).
+                            defaults to light_green.
+                            you can also specify the value with
+                            PYTEST_MD_REPORT_SUCCESS_COLOR environment variable.
       --md-report-skip-color=MD_REPORT_SKIP_COLOR
-                            text color of skipped results. specify a color name (one
-                            of the black/red/green/yellow/blue/magenta/cyan/white/li
-                            ghtblack/lightred/lightgreen/lightyellow/lightblue/light
-                            magenta/lightcyan/lightwhite) or a coor code (e.g.
-                            #ff1020). defaults to light_yellow. you can also specify
-                            the value with PYTEST_MD_REPORT_SKIP_COLOR environment
-                            variable.
+                            text color of skipped results.
+                            specify a color name (one of the black/red/green/yellow/
+                            blue/magenta/cyan/white/lightblack/lightred/lightgreen/l
+                            ightyellow/lightblue/lightmagenta/lightcyan/lightwhite)
+                            or a coor code (e.g. #ff1020).
+                            defaults to light_yellow.
+                            you can also specify the value with
+                            PYTEST_MD_REPORT_SKIP_COLOR environment variable.
       --md-report-error-color=MD_REPORT_ERROR_COLOR
-                            text color of failed results. specify a color name (one
-                            of the black/red/green/yellow/blue/magenta/cyan/white/li
-                            ghtblack/lightred/lightgreen/lightyellow/lightblue/light
-                            magenta/lightcyan/lightwhite) or a coor code (e.g.
-                            #ff1020). defaults to light_red. you can also specify
-                            the value with PYTEST_MD_REPORT_ERROR_COLOR environment
-                            variable.
+                            text color of failed results.
+                            specify a color name (one of the black/red/green/yellow/
+                            blue/magenta/cyan/white/lightblack/lightred/lightgreen/l
+                            ightyellow/lightblue/lightmagenta/lightcyan/lightwhite)
+                            or a coor code (e.g. #ff1020).
+                            defaults to light_red.
+                            you can also specify the value with
+                            PYTEST_MD_REPORT_ERROR_COLOR environment variable.
 
 ini-options
 --------------------------------------------
@@ -157,7 +163,8 @@ ini-options
   md_report_zeros (string):
                         rendering method for results of zero values. number:
                         render as a digit number (0). empty: not rendering.
-                        defaults to number.
+                        defaults to number. defaults to empty when execution in
+                        ci.
   md_report_success_color (string):
                         text color of succeeded results. specify a color name
                         (one of the black/red/green/yellow/blue/magenta/cyan/whi
@@ -197,5 +204,5 @@ ini-options
 
 Dependencies
 ============================================
-- Python 3.5+
+- Python 3.6+
 - `Python package dependencies (automatically installed) <https://github.com/thombashi/pytest-md-report/network/dependencies>`__
