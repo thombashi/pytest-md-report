@@ -50,7 +50,10 @@ setuptools.setup(
     long_description_content_type="text/x-rst",
     packages=setuptools.find_packages(),
     package_data={MODULE_NAME: ["py.typed"]},
-    project_urls={"Source": REPOSITORY_URL, "Tracker": "{:s}/issues".format(REPOSITORY_URL),},
+    project_urls={
+        "Source": REPOSITORY_URL,
+        "Tracker": "{:s}/issues".format(REPOSITORY_URL),
+    },
     python_requires=">=3.6",
     install_requires=INSTALL_REQUIRES,
     extras_require={"test": TESTS_REQUIRES},
@@ -73,5 +76,9 @@ setuptools.setup(
     ],
     cmdclass=get_release_command_class(),
     zip_safe=False,
-    entry_points={"pytest11": ["pytest-md-report = pytest_md_report.plugin",]},
+    entry_points={
+        "pytest11": [
+            "pytest-md-report = pytest_md_report.plugin",
+        ]
+    },
 )

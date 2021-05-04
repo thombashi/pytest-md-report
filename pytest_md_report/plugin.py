@@ -79,18 +79,16 @@ def pytest_addoption(parser):
     )
 
     parser.addini(
-        Option.MD_REPORT.inioption_str, type="bool", default=False, help=Option.MD_REPORT.help_msg,
+        Option.MD_REPORT.inioption_str, type="bool", default=False, help=Option.MD_REPORT.help_msg
     )
     parser.addini(
-        Option.MD_REPORT_VERBOSE.inioption_str,
-        default=None,
-        help=Option.MD_REPORT_VERBOSE.help_msg,
+        Option.MD_REPORT_VERBOSE.inioption_str, default=None, help=Option.MD_REPORT_VERBOSE.help_msg
     )
     parser.addini(
-        Option.MD_REPORT_COLOR.inioption_str, default=None, help=Option.MD_REPORT_COLOR.help_msg,
+        Option.MD_REPORT_COLOR.inioption_str, default=None, help=Option.MD_REPORT_COLOR.help_msg
     )
     parser.addini(
-        Option.MD_REPORT_MARGIN.inioption_str, default=None, help=Option.MD_REPORT_MARGIN.help_msg,
+        Option.MD_REPORT_MARGIN.inioption_str, default=None, help=Option.MD_REPORT_MARGIN.help_msg
     )
     parser.addini(
         Option.MD_REPORT_ZEROS.inioption_str, default=None, help=Option.MD_REPORT_ZEROS.help_msg
@@ -407,15 +405,23 @@ def make_md_report(
     writer = TableWriterFactory.create_from_format_name("md")
 
     matrix = [
-        list(key) + [results.get(key, 0) for key in outcomes] + [sum(results.values())]  # type: ignore
+        list(key) + [results.get(key, 0) for key in outcomes] + [sum(results.values())]
         for key, results in results_per_testfunc.items()
     ]
     if verbosity_level == 0:
         writer.headers = [Header.FILEPATH] + outcomes + [Header.SUBTOTAL]
-        matrix.append(["TOTAL"] + [total_stats.get(key, 0) for key in outcomes] + [sum(total_stats.values())])  # type: ignore
+        matrix.append(
+            ["TOTAL"]
+            + [total_stats.get(key, 0) for key in outcomes]  # type: ignore
+            + [sum(total_stats.values())]  # type: ignore
+        )
     elif verbosity_level >= 1:
         writer.headers = [Header.FILEPATH, Header.TESTFUNC] + outcomes + [Header.SUBTOTAL]
-        matrix.append(["TOTAL", ""] + [total_stats.get(key, 0) for key in outcomes] + [sum(total_stats.values())])  # type: ignore
+        matrix.append(
+            ["TOTAL", ""]
+            + [total_stats.get(key, 0) for key in outcomes]  # type: ignore
+            + [sum(total_stats.values())]  # type: ignore
+        )
 
     writer.margin = retrieve_report_margin(config)
     writer.value_matrix = matrix
