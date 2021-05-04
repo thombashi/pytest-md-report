@@ -1,7 +1,6 @@
 from enum import Enum, unique
 from textwrap import dedent
 
-from pathvalidate import replace_symbol
 from tcolorpy import AnsiFGColor
 
 
@@ -128,15 +127,15 @@ class Option(Enum):
 
     @property
     def cmdoption_str(self) -> str:
-        return "--" + replace_symbol(self.__name, "-").lower()
+        return "--" + self.__name.lower()
 
     @property
     def envvar_str(self) -> str:
-        return "PYTEST_" + replace_symbol(self.__name, "_").upper()
+        return "PYTEST_" + self.__name.replace("-", "_").upper()
 
     @property
     def inioption_str(self) -> str:
-        return replace_symbol(self.__name, "_").lower()
+        return self.__name.replace("-", "_").lower()
 
     @property
     def help_msg(self) -> str:
