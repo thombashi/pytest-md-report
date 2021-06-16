@@ -74,6 +74,8 @@ setuptools.setup(
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Software Development :: Testing",
+        "Topic :: Text Processing",
+        "Topic :: Text Processing :: Markup :: Markdown",
     ],
     cmdclass=get_release_command_class(),
     zip_safe=False,
