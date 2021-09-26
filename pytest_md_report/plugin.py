@@ -270,7 +270,7 @@ class ColorRetriever:
         self.__color_map = color_map
 
     def retrieve_fg_bg_color(self, base_color: str) -> Tuple[str, Optional[str]]:
-        bg_color = None  # type: Optional[str]
+        bg_color: Optional[str] = None
 
         if (self.__row % 2) == 0:
             fg_color = self.__color_map[FGColor.GRAYOUT] if self.__is_grayout else base_color
@@ -365,7 +365,7 @@ def col_separator_style_filter(
 def extract_pytest_stats(
     reporter: TerminalReporter, outcomes: Sequence[str], verbosity_level: int
 ) -> Mapping[Tuple, Mapping[str, int]]:
-    results_per_testfunc = {}  # type: Dict[Tuple, Dict[str, int]]
+    results_per_testfunc: Dict[Tuple, Dict[str, int]] = {}
 
     for stat_key, values in reporter.stats.items():
         if stat_key not in outcomes:
@@ -380,7 +380,7 @@ def extract_pytest_stats(
             testfunc = value.head_line.split("[")[0]
 
             if verbosity_level == 0:
-                key = (filesystempath,)  # type: Tuple
+                key: Tuple = (filesystempath,)
             elif verbosity_level >= 1:
                 key = (filesystempath, testfunc)
 
