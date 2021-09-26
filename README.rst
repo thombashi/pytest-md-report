@@ -21,6 +21,10 @@ Summary
     :target: https://github.com/thombashi/pytest-md-report/actions?query=workflow%3ATests
     :alt: Linux/macOS/Windows CI status
 
+.. image:: https://github.com/thombashi/pytest-md-report/actions/workflows/codeql-analysis.yml/badge.svg
+    :target: https://github.com/thombashi/pytest-md-report/actions/workflows/codeql-analysis.yml
+    :alt: CodeQL
+
 A pytest plugin to make a test results report with Markdown table format.
 
 
