@@ -6,6 +6,7 @@ from _pytest.config import Config
 from _pytest.terminal import TerminalReporter
 from pytablewriter import TableWriterFactory
 from pytablewriter.style import Cell, Style
+from pytablewriter.writer import AbstractTableWriter
 from typepy import Bool, Integer, StrictLevel
 from typepy.error import TypeConversionError
 
@@ -282,11 +283,11 @@ class ColorRetriever:
         return (fg_color, bg_color)
 
 
-def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
-    writer = kwargs["writer"]
-    report_color = kwargs["report_color"]
+def style_filter(cell: Cell, **kwargs: Dict[str, Any]) -> Optional[Style]:
+    writer = cast(AbstractTableWriter, kwargs["writer"])
+    report_color = cast(str, kwargs["report_color"])
     color_map = kwargs["color_map"]
-    num_rows = kwargs["num_rows"]
+    num_rows = cast(int, kwargs["num_rows"])
     fg_color = None
     bg_color = None
 
@@ -342,9 +343,9 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
 
 
 def col_separator_style_filter(
-    left_cell: Optional[Cell], right_cell: Optional[Cell], **kwargs: Any
+    left_cell: Optional[Cell], right_cell: Optional[Cell], **kwargs: Dict[str, Any]
 ) -> Optional[Style]:
-    num_rows = kwargs["num_rows"]
+    num_rows = cast(int, kwargs["num_rows"])
     fg_color = None
     bg_color = None
     row = left_cell.row if left_cell else cast(Cell, right_cell).row
