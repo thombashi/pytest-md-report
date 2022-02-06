@@ -99,7 +99,7 @@ class Option(Enum):
         dedent(
             """\
             text color of succeeded results.
-            specify a color name (one of the {names}) or a coor code (e.g. #ff1020).
+            specify a color name (one of the {names}) or a color code (e.g. #ff1020).
             defaults to {default}.
             """
         ).format(names=COLOR_NAMES, default=Default.FGColor.SUCCESS),
@@ -109,7 +109,7 @@ class Option(Enum):
         dedent(
             """\
             text color of skipped results.
-            specify a color name (one of the {names}) or a coor code (e.g. #ff1020).
+            specify a color name (one of the {names}) or a color code (e.g. #ff1020).
             defaults to {default}.
             """
         ).format(names=COLOR_NAMES, default=Default.FGColor.SKIP),
@@ -119,7 +119,7 @@ class Option(Enum):
         dedent(
             """\
             text color of failed results.
-            specify a color name (one of the {names}) or a coor code (e.g. #ff1020).
+            specify a color name (one of the {names}) or a color code (e.g. #ff1020).
             defaults to {default}.
             """
         ).format(names=COLOR_NAMES, default=Default.FGColor.ERROR),
