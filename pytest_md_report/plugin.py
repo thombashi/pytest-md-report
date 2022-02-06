@@ -135,6 +135,7 @@ def is_make_md_report(config: Config) -> bool:
 
 
 def _is_ci() -> bool:
+    # most of the CI services will be set CI environment to 'true'
     CI = os.environ.get("CI")
     if not CI:
         return False
