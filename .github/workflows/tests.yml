@@ -3,6 +3,25 @@ name: Tests
 on: [push, pull_request]
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.8-slim
+    permissions: read-all
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.job }}
+      cancel-in-progress: true
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: make setup-ci
+
+      - name: Lint
+        run: make check
+
   unit-test:
     runs-on: ${{ matrix.os }}
     strategy:
