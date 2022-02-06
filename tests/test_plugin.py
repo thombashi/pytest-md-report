@@ -119,7 +119,11 @@ def test_pytest_md_report_zeros(testdir):
 
 @pytest.mark.parametrize(
     ["color_option"],
-    [["--md-report-success-color"], ["--md-report-skip-color"], ["--md-report-error-color"]],
+    [
+        ["--md-report-success-color"],
+        ["--md-report-skip-color"],
+        ["--md-report-error-color"],
+    ],
 )
 def test_pytest_md_report_results_color(testdir, color_option):
     testdir.makepyfile(PYFILE_MIX_TESTS)
