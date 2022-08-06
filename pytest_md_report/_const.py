@@ -66,6 +66,19 @@ class Option(Enum):
             """
         ),
     )
+    MD_REPORT_OUTPUT = (
+        f"{OPTION_PREFIX}-output",
+        dedent(
+            """\
+            path to a file that outputs test report.
+            overwrite a file content if the file already exists.
+            """
+        ),
+    )
+    MD_REPORT_TEE = (
+        f"{OPTION_PREFIX}-tee",
+        "output test report for both standard output and a file.",
+    )
     MD_REPORT_COLOR = (
         f"{OPTION_PREFIX}-color",
         dedent(

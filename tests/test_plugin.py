@@ -78,6 +78,38 @@ def test_pytest_md_report(testdir):
     assert out == expected
 
 
+def test_pytest_md_report_output(testdir):
+    testdir.makepyfile(PYFILE_MIX_TESTS)
+    expected = dedent(
+        """\
+        |            filepath             | passed | failed | error | skipped | xfailed | xpassed | SUBTOTAL |
+        | ------------------------------- | -----: | -----: | ----: | ------: | ------: | ------: | -------: |
+        | test_pytest_md_report_output.py |      1 |      1 |     1 |       1 |       1 |       1 |        6 |
+        | TOTAL                           |      1 |      1 |     1 |       1 |       1 |       1 |        6 |"""
+    )
+    output_filepath = testdir.tmpdir.join("report.md")
+    result = testdir.runpytest(
+        "--md-report", "--md-report-color", "never", "--md-report-output", output_filepath
+    )
+    out = "\n".join(result.outlines[-4:])
+    assert out != expected
+    with open(output_filepath) as f:
+        assert f.read().strip() == expected
+
+    result = testdir.runpytest(
+        "--md-report",
+        "--md-report-color",
+        "never",
+        "--md-report-output",
+        output_filepath,
+        "--md-report-tee",
+    )
+    out = "\n".join(result.outlines[-4:])
+    assert out == expected
+    with open(output_filepath) as f:
+        assert f.read().strip() == expected
+
+
 def test_pytest_md_report_margin(testdir):
     testdir.makepyfile(PYFILE_MIX_TESTS)
     expected = dedent(

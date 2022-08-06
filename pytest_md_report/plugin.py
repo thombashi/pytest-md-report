@@ -39,6 +39,19 @@ def pytest_addoption(parser):
         + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_VERBOSE.envvar_str),
     )
     group.addoption(
+        Option.MD_REPORT_OUTPUT.cmdoption_str,
+        metavar="FILEPATH",
+        default=None,
+        help=Option.MD_REPORT_OUTPUT.help_msg
+        + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_OUTPUT.envvar_str),
+    )
+    group.addoption(
+        Option.MD_REPORT_TEE.cmdoption_str,
+        action="store_true",
+        help=Option.MD_REPORT_TEE.help_msg
+        + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_TEE.envvar_str),
+    )
+    group.addoption(
         Option.MD_REPORT_COLOR.cmdoption_str,
         choices=ColorPolicy.LIST,
         default=None,
@@ -87,6 +100,12 @@ def pytest_addoption(parser):
     )
     parser.addini(
         Option.MD_REPORT_COLOR.inioption_str, default=None, help=Option.MD_REPORT_COLOR.help_msg
+    )
+    parser.addini(
+        Option.MD_REPORT_OUTPUT.inioption_str, default=None, help=Option.MD_REPORT_OUTPUT.help_msg
+    )
+    parser.addini(
+        Option.MD_REPORT_TEE.inioption_str, default=None, help=Option.MD_REPORT_TEE.help_msg
     )
     parser.addini(
         Option.MD_REPORT_MARGIN.inioption_str, default=None, help=Option.MD_REPORT_MARGIN.help_msg
@@ -180,6 +199,30 @@ def retrieve_verbosity_level(config: Config) -> int:
         verbosity_level = config.option.verbose
 
     return verbosity_level
+
+
+def retrieve_output_filepath(config: Config) -> Optional[str]:
+    output_filepath = config.option.md_report_output
+
+    if not output_filepath:
+        output_filepath = os.environ.get(Option.MD_REPORT_OUTPUT.envvar_str)
+
+    if not output_filepath:
+        output_filepath = config.getini(Option.MD_REPORT_OUTPUT.inioption_str)
+
+    return output_filepath
+
+
+def retrieve_tee(config: Config) -> bool:
+    tee = config.option.md_report_tee
+
+    if not tee:
+        tee = os.environ.get(Option.MD_REPORT_TEE.envvar_str, False)
+
+    if not tee:
+        tee = config.getini(Option.MD_REPORT_TEE.inioption_str)
+
+    return tee
 
 
 def retrieve_report_color(config: Config) -> str:
@@ -466,4 +509,15 @@ def pytest_unconfigure(config):
 
     reporter = config.pluginmanager.get_plugin("terminalreporter")
     stat_count_map = retrieve_stat_count_map(reporter)
-    reporter._tw.write(make_md_report(config, reporter, stat_count_map))
+    report = make_md_report(config, reporter, stat_count_map)
+    output_filepath = retrieve_output_filepath(config)
+    is_tee = retrieve_tee(config)
+
+    if is_tee or not output_filepath:
+        reporter._tw.write(report)
+
+    if not output_filepath:
+        return
+
+    with open(output_filepath, "w") as f:
+        f.write(report)
