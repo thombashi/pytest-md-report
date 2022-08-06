@@ -51,11 +51,14 @@ class Default:
         GRAYOUT = "light_black"
 
 
+OPTION_PREFIX = "md-report"
+
+
 @unique
 class Option(Enum):
-    MD_REPORT = ("md-report", "create markdown report.")
+    MD_REPORT = (OPTION_PREFIX, "create markdown report.")
     MD_REPORT_VERBOSE = (
-        "md-report-verbose",
+        f"{OPTION_PREFIX}-verbose",
         dedent(
             """\
             verbosity level for pytest-md-report. if not set, using verbosity level of pytest.
@@ -64,7 +67,7 @@ class Option(Enum):
         ),
     )
     MD_REPORT_COLOR = (
-        "md-report-color",
+        f"{OPTION_PREFIX}-color",
         dedent(
             """\
             auto: display colored (text and background) reports by using ANSI escape codes.
@@ -75,7 +78,7 @@ class Option(Enum):
         ).format(default=Default.COLOR),
     )
     MD_REPORT_MARGIN = (
-        "md-report-margin",
+        f"{OPTION_PREFIX}-margin",
         dedent(
             """\
             margin size for each cells.
@@ -84,7 +87,7 @@ class Option(Enum):
         ).format(default=Default.MARGIN),
     )
     MD_REPORT_ZEROS = (
-        "md-report-zeros",
+        f"{OPTION_PREFIX}-zeros",
         dedent(
             """\
             rendering method for results of zero values.
@@ -95,7 +98,7 @@ class Option(Enum):
         ).format(default=Default.ZEROS),
     )
     MD_REPORT_SUCCESS_COLOR = (
-        "md-report-success-color",
+        f"{OPTION_PREFIX}-success-color",
         dedent(
             """\
             text color of succeeded results.
@@ -105,7 +108,7 @@ class Option(Enum):
         ).format(names=COLOR_NAMES, default=Default.FGColor.SUCCESS),
     )
     MD_REPORT_SKIP_COLOR = (
-        "md-report-skip-color",
+        f"{OPTION_PREFIX}-skip-color",
         dedent(
             """\
             text color of skipped results.
@@ -115,7 +118,7 @@ class Option(Enum):
         ).format(names=COLOR_NAMES, default=Default.FGColor.SKIP),
     )
     MD_REPORT_ERROR_COLOR = (
-        "md-report-error-color",
+        f"{OPTION_PREFIX}-error-color",
         dedent(
             """\
             text color of failed results.
