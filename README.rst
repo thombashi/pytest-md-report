@@ -97,6 +97,14 @@ Command options
                             defaults to 0.
                             you can also specify the value with
                             PYTEST_MD_REPORT_VERBOSE environment variable.
+      --md-report-output=FILEPATH
+                            path to a file that outputs test report.
+                            overwrite a file content if the file already exists.
+                            you can also specify the value with
+                            PYTEST_MD_REPORT_OUTPUT environment variable.
+      --md-report-tee       output test report for both standard output and a file.
+                            you can also specify the value with PYTEST_MD_REPORT_TEE
+                            environment variable.
       --md-report-color={auto,text,never}
                             auto: display colored (text and background) reports by
                             using ANSI escape codes.
@@ -162,6 +170,11 @@ ini-options
                         using ANSI escape codes. text: display colored (text)
                         reports by using ANSI escape codes. never: display
                         report without color. defaults to 'auto'.
+  md_report_output (string):
+                        path to a file that outputs test report. overwrite a
+                        file content if the file already exists.
+  md_report_tee (string):
+                        output test report for both standard output and a file.
   md_report_margin (string):
                         margin size for each cells. defaults to 1.
   md_report_zeros (string):
