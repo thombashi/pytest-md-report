@@ -56,13 +56,14 @@ OPTION_PREFIX = "md-report"
 
 @unique
 class Option(Enum):
-    MD_REPORT = (OPTION_PREFIX, "create markdown report.")
+    MD_REPORT = (OPTION_PREFIX, "Create Markdown report.")
     MD_REPORT_VERBOSE = (
         f"{OPTION_PREFIX}-verbose",
         dedent(
             """\
-            verbosity level for pytest-md-report. if not set, using verbosity level of pytest.
-            defaults to 0.
+            Verbosity level for pytest-md-report.
+            If not set, use the verbosity level of pytest.
+            Defaults to 0.
             """
         ),
     )
@@ -70,8 +71,8 @@ class Option(Enum):
         f"{OPTION_PREFIX}-output",
         dedent(
             """\
-            path to a file that outputs test report.
-            overwrite a file content if the file already exists.
+            Path to a file to the outputs test report.
+            Overwrite a file content if the file already exists.
             """
         ),
     )
@@ -83,10 +84,11 @@ class Option(Enum):
         f"{OPTION_PREFIX}-color",
         dedent(
             """\
-            auto: display colored (text and background) reports by using ANSI escape codes.
-            text: display colored (text) reports by using ANSI escape codes.
-            never: display report without color.
-            defaults to '{default}'.
+            How to color output reports.
+            auto: render colored (text and background) reports using ANSI escape codes.
+            text: render colored text reports by using ANSI escape codes.
+            never: render report without color.
+            Defaults to '{default}'.
             """
         ).format(default=Default.COLOR),
     )
@@ -94,8 +96,8 @@ class Option(Enum):
         f"{OPTION_PREFIX}-margin",
         dedent(
             """\
-            margin size for each cells.
-            defaults to {default}.
+            Margin size for each cell.
+            Defaults to {default}.
             """
         ).format(default=Default.MARGIN),
     )
@@ -103,10 +105,11 @@ class Option(Enum):
         f"{OPTION_PREFIX}-zeros",
         dedent(
             """\
-            rendering method for results of zero values.
+            Rendering method for results of zero values.
             number: render as a digit number (0).
             empty: not rendering.
-            defaults to {default}. defaults to empty when execution in ci.
+            Defaults to 'empty' when CI environment variable is set to TRUE (case insensitive);
+            otherwise '{default}'.
             """
         ).format(default=Default.ZEROS),
     )
@@ -114,9 +117,9 @@ class Option(Enum):
         f"{OPTION_PREFIX}-success-color",
         dedent(
             """\
-            text color of succeeded results.
-            specify a color name (one of the {names}) or a color code (e.g. #ff1020).
-            defaults to {default}.
+            Text color of succeeded results.
+            Specify a color name (one of the {names}) or a color code (e.g. #ff1020).
+            Defaults to '{default}'.
             """
         ).format(names=COLOR_NAMES, default=Default.FGColor.SUCCESS),
     )
@@ -124,9 +127,9 @@ class Option(Enum):
         f"{OPTION_PREFIX}-skip-color",
         dedent(
             """\
-            text color of skipped results.
-            specify a color name (one of the {names}) or a color code (e.g. #ff1020).
-            defaults to {default}.
+            Text color of skipped results.
+            Specify a color name (one of the {names}) or a color code (e.g. #ff1020).
+            Defaults to '{default}'.
             """
         ).format(names=COLOR_NAMES, default=Default.FGColor.SKIP),
     )
@@ -134,9 +137,9 @@ class Option(Enum):
         f"{OPTION_PREFIX}-error-color",
         dedent(
             """\
-            text color of failed results.
-            specify a color name (one of the {names}) or a color code (e.g. #ff1020).
-            defaults to {default}.
+            Text color of failed results.
+            Specify a color name (one of the {names}) or a color code (e.g. #ff1020).
+            Defaults to '{default}'.
             """
         ).format(names=COLOR_NAMES, default=Default.FGColor.ERROR),
     )
