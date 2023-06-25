@@ -13,7 +13,7 @@ from typepy.error import TypeConversionError
 from ._const import BGColor, ColorPolicy, Default, FGColor, Header, HelpMsg, Option, ZerosRender
 
 
-def zero_to_nullstr(value) -> str:
+def zero_to_nullstr(value: Any) -> Any:
     if value == 0:
         return ""
 
@@ -176,7 +176,7 @@ def _is_appveyor_ci() -> bool:
     return APPVEYOR.lower() == "true"
 
 
-def _to_int(value) -> Optional[int]:
+def _to_int(value: Any) -> Optional[int]:
     try:
         return Integer(value, strict_level=StrictLevel.MIN).convert()
     except TypeConversionError:
@@ -327,7 +327,7 @@ class ColorRetriever:
         return (fg_color, bg_color)
 
 
-def style_filter(cell: Cell, **kwargs: Dict[str, Any]) -> Optional[Style]:
+def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
     writer = cast(AbstractTableWriter, kwargs["writer"])
     report_color = cast(str, kwargs["report_color"])
     color_map = kwargs["color_map"]
@@ -456,16 +456,14 @@ def make_md_report(
     if verbosity_level == 0:
         writer.headers = [Header.FILEPATH] + outcomes + [Header.SUBTOTAL]
         matrix.append(
-            ["TOTAL"]
-            + [total_stats.get(key, 0) for key in outcomes]  # type: ignore
-            + [sum(total_stats.values())]  # type: ignore
+            ["TOTAL"] + [total_stats.get(key, 0) for key in outcomes] + [sum(total_stats.values())]
         )
     elif verbosity_level >= 1:
         writer.headers = [Header.FILEPATH, Header.TESTFUNC] + outcomes + [Header.SUBTOTAL]
         matrix.append(
             ["TOTAL", ""]
-            + [total_stats.get(key, 0) for key in outcomes]  # type: ignore
-            + [sum(total_stats.values())]  # type: ignore
+            + [total_stats.get(key, 0) for key in outcomes]
+            + [sum(total_stats.values())]
         )
 
     writer.margin = retrieve_report_margin(config)
