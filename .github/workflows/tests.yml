@@ -6,7 +6,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/thombashi/python-ci:3.10
+      image: ghcr.io/thombashi/python-ci:3.11
     permissions: read-all
     concurrency:
       group: ${{ github.workflow }}-${{ github.job }}
