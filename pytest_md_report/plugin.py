@@ -469,10 +469,10 @@ def make_md_report(
     writer.margin = retrieve_report_margin(config)
     writer.value_matrix = matrix
 
-    report_color = retrieve_report_color(config)
-    if report_color != ColorPolicy.NEVER:
+    color_policy = retrieve_report_color(config)
+    if color_policy != ColorPolicy.NEVER:
         writer.style_filter_kwargs = {
-            "color_policy": report_color,
+            "color_policy": color_policy,
             "color_map": {
                 FGColor.SUCCESS: retrieve_report_results_color(
                     config, Option.MD_REPORT_SUCCESS_COLOR, Default.FGColor.SUCCESS
@@ -491,7 +491,7 @@ def make_md_report(
         if not _is_travis_ci():
             writer.add_style_filter(style_filter)
 
-        if report_color == ColorPolicy.AUTO and not _is_ci():
+        if color_policy == ColorPolicy.AUTO and not _is_ci():
             writer.add_col_separator_style_filter(col_separator_style_filter)
 
     report_zeros = retrieve_report_zeros(config)
