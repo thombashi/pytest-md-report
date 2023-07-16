@@ -307,11 +307,11 @@ def retrieve_stat_count_map(reporter: TerminalReporter) -> Dict[str, int]:
 
 class ColorRetriever:
     def __init__(
-        self, row: int, is_grayout: bool, report_color: str, color_map: Dict[str, str]
+        self, row: int, is_grayout: bool, color_polilcy: str, color_map: Dict[str, str]
     ) -> None:
         self.__row = row
         self.__is_grayout = is_grayout
-        self.__color_polilcy = report_color
+        self.__color_polilcy = color_polilcy
         self.__color_map = color_map
 
     def retrieve_fg_bg_color(self, base_color: str) -> Tuple[str, Optional[str]]:
