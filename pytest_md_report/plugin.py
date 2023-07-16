@@ -49,6 +49,7 @@ def pytest_addoption(parser: Parser) -> None:
     group.addoption(
         Option.MD_REPORT_TEE.cmdoption_str,
         action="store_true",
+        default=None,
         help=Option.MD_REPORT_TEE.help_msg
         + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_TEE.envvar_str),
     )
@@ -217,13 +218,17 @@ def retrieve_output_filepath(config: Config) -> Optional[str]:
 def retrieve_tee(config: Config) -> bool:
     tee: Optional[bool] = config.option.md_report_tee
 
-    if not tee:
-        tee = os.environ.get(Option.MD_REPORT_TEE.envvar_str, False)
+    if tee is None:
+        envvar_str = os.environ.get(Option.MD_REPORT_TEE.envvar_str)
+        if envvar_str is not None:
+            tee = bool(envvar_str)
 
-    if not tee:
-        tee = config.getini(Option.MD_REPORT_TEE.inioption_str)
+    if tee is None:
+        inioption_str = config.getini(Option.MD_REPORT_TEE.inioption_str)
+        if inioption_str is not None:
+            tee = bool(inioption_str)
 
-    return tee
+    return tee if tee is not None else False
 
 
 def retrieve_color_policy(config: Config) -> ColorPolicy:
