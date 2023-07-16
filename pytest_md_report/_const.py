@@ -83,7 +83,7 @@ class Option(Enum):
         f"{OPTION_PREFIX}-color",
         dedent(
             """\
-            How to color output reports.
+            How coloring output reports.
             auto: render colored (text and background) reports using ANSI escape codes.
             text: render colored text reports by using ANSI escape codes.
             never: render report without color.
