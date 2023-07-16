@@ -84,7 +84,7 @@ class Option(Enum):
         dedent(
             """\
             How coloring output reports.
-            auto: for terminal output, render colored (text and background) reports 
+            auto: for terminal output, render colored (text and background) reports
             using ANSI escape codes.
             for file output, render the report without color.
             text: render colored text reports by using ANSI escape codes.
