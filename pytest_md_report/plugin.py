@@ -443,7 +443,10 @@ def extract_pytest_stats(
 
 
 def make_md_report(
-    config: Config, reporter: TerminalReporter, total_stats: Mapping[str, int]
+    config: Config,
+    reporter: TerminalReporter,
+    total_stats: Mapping[str, int],
+    color_policy: ColorPolicy,
 ) -> str:
     verbosity_level = retrieve_verbosity_level(config)
 
@@ -475,7 +478,6 @@ def make_md_report(
     writer.margin = retrieve_report_margin(config)
     writer.value_matrix = matrix
 
-    color_policy = retrieve_color_policy(config)
     if color_policy != ColorPolicy.NEVER:
         writer.style_filter_kwargs = {
             "color_policy": color_policy,
@@ -513,15 +515,34 @@ def pytest_unconfigure(config: Config) -> None:
 
     reporter = config.pluginmanager.get_plugin("terminalreporter")
     stat_count_map = retrieve_stat_count_map(reporter)
-    report = make_md_report(config, reporter, stat_count_map)
-    output_filepath = retrieve_output_filepath(config)
     is_tee = retrieve_tee(config)
+    output_filepath = retrieve_output_filepath(config)
+    color_policy = retrieve_color_policy(config)
 
-    if is_tee or not output_filepath:
-        reporter._tw.write(report)
+    is_output_term = is_tee or not output_filepath
+    term_color_policy = color_policy
 
-    if not output_filepath:
+    is_output_file = is_tee or output_filepath
+    file_color_policy = color_policy
+    if is_output_file and color_policy == ColorPolicy.AUTO:
+        file_color_policy = ColorPolicy.NEVER
+
+    term_report = None
+    if is_output_term:
+        term_report = make_md_report(
+            config, reporter, stat_count_map, color_policy=term_color_policy
+        )
+        reporter._tw.write(term_report)
+
+    if not is_output_file:
         return
 
+    file_report = term_report
+    if not file_report or file_color_policy != term_color_policy:
+        file_report = make_md_report(
+            config, reporter, stat_count_map, color_policy=file_color_policy
+        )
+
+    assert output_filepath
     with open(output_filepath, "w") as f:
-        f.write(report)
+        f.write(file_report)
