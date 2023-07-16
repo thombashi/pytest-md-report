@@ -226,7 +226,7 @@ def retrieve_tee(config: Config) -> bool:
     return tee
 
 
-def retrieve_report_color(config: Config) -> str:
+def retrieve_color_policy(config: Config) -> str:
     color_policy = config.option.md_report_color
 
     if not color_policy:
@@ -470,7 +470,7 @@ def make_md_report(
     writer.margin = retrieve_report_margin(config)
     writer.value_matrix = matrix
 
-    color_policy = retrieve_report_color(config)
+    color_policy = retrieve_color_policy(config)
     if color_policy != ColorPolicy.NEVER:
         writer.style_filter_kwargs = {
             "color_policy": color_policy,
