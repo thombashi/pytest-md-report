@@ -13,11 +13,10 @@ class Header:
     SUBTOTAL = "SUBTOTAL"
 
 
-class ColorPolicy:
+class ColorPolicy(Enum):
     AUTO = "auto"
     TEXT = "text"
     NEVER = "never"
-    LIST = (AUTO, TEXT, NEVER)
 
 
 class ZerosRender:

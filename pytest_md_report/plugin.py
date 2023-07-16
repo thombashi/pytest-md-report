@@ -54,7 +54,7 @@ def pytest_addoption(parser: Parser) -> None:
     )
     group.addoption(
         Option.MD_REPORT_COLOR.cmdoption_str,
-        choices=ColorPolicy.LIST,
+        choices=[policy.value for policy in ColorPolicy],
         default=None,
         help=Option.MD_REPORT_COLOR.help_msg
         + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_COLOR.envvar_str),
@@ -226,7 +226,7 @@ def retrieve_tee(config: Config) -> bool:
     return tee
 
 
-def retrieve_color_policy(config: Config) -> str:
+def retrieve_color_policy(config: Config) -> ColorPolicy:
     color_policy = config.option.md_report_color
 
     if not color_policy:
@@ -238,7 +238,7 @@ def retrieve_color_policy(config: Config) -> str:
     if not color_policy:
         return Default.COLOR_POLICY
 
-    return color_policy
+    return ColorPolicy[color_policy.upper()]
 
 
 def retrieve_report_margin(config: Config) -> int:
@@ -308,7 +308,7 @@ def retrieve_stat_count_map(reporter: TerminalReporter) -> Dict[str, int]:
 
 class ColorRetriever:
     def __init__(
-        self, row: int, is_grayout: bool, color_polilcy: str, color_map: Dict[str, str]
+        self, row: int, is_grayout: bool, color_polilcy: ColorPolicy, color_map: Dict[str, str]
     ) -> None:
         self.__row = row
         self.__is_grayout = is_grayout
@@ -330,7 +330,7 @@ class ColorRetriever:
 
 def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
     writer = cast(AbstractTableWriter, kwargs["writer"])
-    color_policy = cast(str, kwargs["color_policy"])
+    color_policy = cast(ColorPolicy, kwargs["color_policy"])
     color_map = kwargs["color_map"]
     num_rows = cast(int, kwargs["num_rows"])
     fg_color = None
