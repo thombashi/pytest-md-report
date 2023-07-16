@@ -227,18 +227,18 @@ def retrieve_tee(config: Config) -> bool:
 
 
 def retrieve_report_color(config: Config) -> str:
-    report_color = config.option.md_report_color
+    color_policy = config.option.md_report_color
 
-    if not report_color:
-        report_color = os.environ.get(Option.MD_REPORT_COLOR.envvar_str)
+    if not color_policy:
+        color_policy = os.environ.get(Option.MD_REPORT_COLOR.envvar_str)
 
-    if not report_color:
-        report_color = config.getini(Option.MD_REPORT_COLOR.inioption_str)
+    if not color_policy:
+        color_policy = config.getini(Option.MD_REPORT_COLOR.inioption_str)
 
-    if not report_color:
+    if not color_policy:
         return Default.COLOR_POLICY
 
-    return report_color
+    return color_policy
 
 
 def retrieve_report_margin(config: Config) -> int:
