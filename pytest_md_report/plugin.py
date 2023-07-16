@@ -329,7 +329,7 @@ class ColorRetriever:
 
 def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
     writer = cast(AbstractTableWriter, kwargs["writer"])
-    report_color = cast(str, kwargs["report_color"])
+    color_policy = cast(str, kwargs["color_policy"])
     color_map = kwargs["color_map"]
     num_rows = cast(int, kwargs["num_rows"])
     fg_color = None
@@ -345,7 +345,7 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
 
         return Style(font_weight="bold")
 
-    retriever = ColorRetriever(cell.row, is_grayout, report_color, color_map)
+    retriever = ColorRetriever(cell.row, is_grayout, color_policy, color_map)
     is_passed = False
     is_failed = False
     is_skipped = False
@@ -472,7 +472,7 @@ def make_md_report(
     report_color = retrieve_report_color(config)
     if report_color != ColorPolicy.NEVER:
         writer.style_filter_kwargs = {
-            "report_color": report_color,
+            "color_policy": report_color,
             "color_map": {
                 FGColor.SUCCESS: retrieve_report_results_color(
                     config, Option.MD_REPORT_SUCCESS_COLOR, Default.FGColor.SUCCESS
