@@ -311,7 +311,7 @@ class ColorRetriever:
     ) -> None:
         self.__row = row
         self.__is_grayout = is_grayout
-        self.__report_color = report_color
+        self.__color_polilcy = report_color
         self.__color_map = color_map
 
     def retrieve_fg_bg_color(self, base_color: str) -> Tuple[str, Optional[str]]:
@@ -319,10 +319,10 @@ class ColorRetriever:
 
         if (self.__row % 2) == 0:
             fg_color = self.__color_map[FGColor.GRAYOUT] if self.__is_grayout else base_color
-            bg_color = BGColor.EVEN_ROW if self.__report_color == ColorPolicy.AUTO else None
+            bg_color = BGColor.EVEN_ROW if self.__color_polilcy == ColorPolicy.AUTO else None
         else:
             fg_color = self.__color_map[FGColor.GRAYOUT] if self.__is_grayout else base_color
-            bg_color = BGColor.ODD_ROW if self.__report_color == ColorPolicy.AUTO else None
+            bg_color = BGColor.ODD_ROW if self.__color_polilcy == ColorPolicy.AUTO else None
 
         return (fg_color, bg_color)
 
