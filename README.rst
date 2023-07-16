@@ -121,11 +121,12 @@ Command options
                             you can also specify the value with PYTEST_MD_REPORT_OUTPUT environment variable.
       --md-report-tee       output test report for both standard output and a file. you can also specify the value with PYTEST_MD_REPORT_TEE environment variable.
       --md-report-color={auto,text,never}
-                            How to color output reports.
-                            auto: render colored (text and background) reports using ANSI escape codes.
+                            How coloring output reports.
+                            auto: for terminal output, render colored (text and background) reports using ANSI escape codes.
+                            for file output, render the report without color.
                             text: render colored text reports by using ANSI escape codes.
                             never: render report without color.
-                            Defaults to 'auto'.
+                            Defaults to 'ColorPolicy.AUTO'.
                             you can also specify the value with PYTEST_MD_REPORT_COLOR environment variable.
       --md-report-margin=MARGIN
                             Margin size for each cell.
@@ -140,20 +141,17 @@ Command options
                             you can also specify the value with PYTEST_MD_REPORT_ZEROS environment variable.
       --md-report-success-color=MD_REPORT_SUCCESS_COLOR
                             Text color of succeeded results.
-                            Specify a color name (one of the black/red/green/yellow/blue/magenta/cyan/white/lightblack/lightred/lightgreen/lightyellow/lightblue/lightmagenta/lightcyan/lightwhite) or a
-                            color code (e.g. #ff1020).
+                            Specify a color name (one of the black/red/green/yellow/blue/magenta/cyan/white/lightblack/lightred/lightgreen/lightyellow/lightblue/lightmagenta/lightcyan/lightwhite) or a color code (e.g. #ff1020).
                             Defaults to 'light_green'.
                             you can also specify the value with PYTEST_MD_REPORT_SUCCESS_COLOR environment variable.
       --md-report-skip-color=MD_REPORT_SKIP_COLOR
                             Text color of skipped results.
-                            Specify a color name (one of the black/red/green/yellow/blue/magenta/cyan/white/lightblack/lightred/lightgreen/lightyellow/lightblue/lightmagenta/lightcyan/lightwhite) or a
-                            color code (e.g. #ff1020).
+                            Specify a color name (one of the black/red/green/yellow/blue/magenta/cyan/white/lightblack/lightred/lightgreen/lightyellow/lightblue/lightmagenta/lightcyan/lightwhite) or a color code (e.g. #ff1020).
                             Defaults to 'light_yellow'.
                             you can also specify the value with PYTEST_MD_REPORT_SKIP_COLOR environment variable.
       --md-report-error-color=MD_REPORT_ERROR_COLOR
                             Text color of failed results.
-                            Specify a color name (one of the black/red/green/yellow/blue/magenta/cyan/white/lightblack/lightred/lightgreen/lightyellow/lightblue/lightmagenta/lightcyan/lightwhite) or a
-                            color code (e.g. #ff1020).
+                            Specify a color name (one of the black/red/green/yellow/blue/magenta/cyan/white/lightblack/lightred/lightgreen/lightyellow/lightblue/lightmagenta/lightcyan/lightwhite) or a color code (e.g. #ff1020).
                             Defaults to 'light_red'.
                             you can also specify the value with PYTEST_MD_REPORT_ERROR_COLOR environment variable.
 
@@ -168,8 +166,8 @@ ini-options
   md_report_verbose (string):
                         Verbosity level for pytest-md-report. If not set, use the verbosity level of pytest. Defaults to 0.
   md_report_color (string):
-                        How to color output reports. auto: render colored (text and background) reports using ANSI escape codes. text: render colored text reports by using ANSI escape codes. never:
-                        render report without color. Defaults to 'auto'.
+                        How coloring output reports. auto: for terminal output, render colored (text and background) reports using ANSI escape codes. for file output, render the report without color. text: render colored text reports by using ANSI escape codes. never: render report without color. Defaults to
+                        'ColorPolicy.AUTO'.
   md_report_output (string):
                         Path to a file to the outputs test report. Overwrite a file content if the file already exists.
   md_report_tee (string):
@@ -177,20 +175,13 @@ ini-options
   md_report_margin (string):
                         Margin size for each cell. Defaults to 1.
   md_report_zeros (string):
-                        Rendering method for results of zero values. number: render as a digit number (0). empty: not rendering. Defaults to 'empty' when CI environment variable is set to TRUE (case
-                        insensitive); otherwise 'number'.
+                        Rendering method for results of zero values. number: render as a digit number (0). empty: not rendering. Defaults to 'empty' when CI environment variable is set to TRUE (case insensitive); otherwise 'number'.
   md_report_success_color (string):
-                        Text color of succeeded results. Specify a color name (one of the
-                        black/red/green/yellow/blue/magenta/cyan/white/lightblack/lightred/lightgreen/lightyellow/lightblue/lightmagenta/lightcyan/lightwhite) or a color code (e.g. #ff1020). Defaults
-                        to 'light_green'.
+                        Text color of succeeded results. Specify a color name (one of the black/red/green/yellow/blue/magenta/cyan/white/lightblack/lightred/lightgreen/lightyellow/lightblue/lightmagenta/lightcyan/lightwhite) or a color code (e.g. #ff1020). Defaults to 'light_green'.
   md_report_skip_color (string):
-                        Text color of skipped results. Specify a color name (one of the
-                        black/red/green/yellow/blue/magenta/cyan/white/lightblack/lightred/lightgreen/lightyellow/lightblue/lightmagenta/lightcyan/lightwhite) or a color code (e.g. #ff1020). Defaults
-                        to 'light_yellow'.
+                        Text color of skipped results. Specify a color name (one of the black/red/green/yellow/blue/magenta/cyan/white/lightblack/lightred/lightgreen/lightyellow/lightblue/lightmagenta/lightcyan/lightwhite) or a color code (e.g. #ff1020). Defaults to 'light_yellow'.
   md_report_error_color (string):
-                        Text color of failed results. Specify a color name (one of the
-                        black/red/green/yellow/blue/magenta/cyan/white/lightblack/lightred/lightgreen/lightyellow/lightblue/lightmagenta/lightcyan/lightwhite) or a color code (e.g. #ff1020). Defaults
-                        to 'light_red'.
+                        Text color of failed results. Specify a color name (one of the black/red/green/yellow/blue/magenta/cyan/white/lightblack/lightred/lightgreen/lightyellow/lightblue/lightmagenta/lightcyan/lightwhite) or a color code (e.g. #ff1020). Defaults to 'light_red'.
 
 
 Dependencies
