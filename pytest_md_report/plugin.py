@@ -236,7 +236,7 @@ def retrieve_report_color(config: Config) -> str:
         report_color = config.getini(Option.MD_REPORT_COLOR.inioption_str)
 
     if not report_color:
-        return Default.COLOR
+        return Default.COLOR_POLICY
 
     return report_color
 

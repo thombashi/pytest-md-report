@@ -40,7 +40,7 @@ class BGColor:
 
 
 class Default:
-    COLOR = ColorPolicy.AUTO
+    COLOR_POLICY = ColorPolicy.AUTO
     MARGIN = 1
     ZEROS = ZerosRender.NUMBER
 
@@ -90,7 +90,7 @@ class Option(Enum):
             never: render report without color.
             Defaults to '{default}'.
             """
-        ).format(default=Default.COLOR),
+        ).format(default=Default.COLOR_POLICY),
     )
     MD_REPORT_MARGIN = (
         f"{OPTION_PREFIX}-margin",
