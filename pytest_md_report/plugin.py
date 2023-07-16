@@ -3,6 +3,7 @@ from collections import defaultdict
 from typing import Any, Dict, Mapping, Optional, Sequence, Tuple, cast
 
 from _pytest.config import Config
+from _pytest.config.argparsing import Parser
 from _pytest.terminal import TerminalReporter
 from pytablewriter import TableWriterFactory
 from pytablewriter.style import Cell, Style
@@ -20,7 +21,7 @@ def zero_to_nullstr(value: Any) -> Any:
     return value
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser: Parser) -> None:
     group = parser.getgroup("md report", "make test results report with markdown table format")
 
     group.addoption(
@@ -134,7 +135,7 @@ def is_make_md_report(config: Config) -> bool:
     if config.option.help:
         return False
 
-    make_report = config.option.md_report
+    make_report: Optional[bool] = config.option.md_report
 
     if make_report is None:
         try:
@@ -184,7 +185,7 @@ def _to_int(value: Any) -> Optional[int]:
 
 
 def retrieve_verbosity_level(config: Config) -> int:
-    verbosity_level = config.option.md_report_verbose
+    verbosity_level: Optional[int] = config.option.md_report_verbose
 
     if verbosity_level is not None and verbosity_level < 0:
         verbosity_level = None
@@ -202,7 +203,7 @@ def retrieve_verbosity_level(config: Config) -> int:
 
 
 def retrieve_output_filepath(config: Config) -> Optional[str]:
-    output_filepath = config.option.md_report_output
+    output_filepath: Optional[str] = config.option.md_report_output
 
     if not output_filepath:
         output_filepath = os.environ.get(Option.MD_REPORT_OUTPUT.envvar_str)
@@ -214,7 +215,7 @@ def retrieve_output_filepath(config: Config) -> Optional[str]:
 
 
 def retrieve_tee(config: Config) -> bool:
-    tee = config.option.md_report_tee
+    tee: Optional[bool] = config.option.md_report_tee
 
     if not tee:
         tee = os.environ.get(Option.MD_REPORT_TEE.envvar_str, False)
@@ -501,7 +502,7 @@ def make_md_report(
     return writer.dumps()
 
 
-def pytest_unconfigure(config):
+def pytest_unconfigure(config: Config) -> None:
     if not is_make_md_report(config):
         return
 
