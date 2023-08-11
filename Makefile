@@ -34,7 +34,7 @@ fmt:
 
 .PHONY: release
 release:
-	cd $(PKG_BUILD_DIR) && $(PYTHON) setup.py release --verbose --search-dir pytest_md_report
+	cd $(PKG_BUILD_DIR) && $(PYTHON) setup.py release --sign --verbose --search-dir pytest_md_report
 	$(MAKE) clean
 
 .PHONY: setup-ci
