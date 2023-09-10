@@ -84,14 +84,14 @@ class Option(Enum):
         dedent(
             """\
             How coloring output reports.
-            auto: for terminal output, render colored (text and background) reports
-            using ANSI escape codes.
+            auto: detect the output destination and colorize reports appropriately with the output.
+            for terminal output, render colored (text and background) reports using ANSI escape codes.
             for file output, render the report without color.
             text: render colored text reports by using ANSI escape codes.
             never: render report without color.
             Defaults to '{default}'.
             """
-        ).format(default=Default.COLOR_POLICY),
+        ).format(default=Default.COLOR_POLICY.value),
     )
     MD_REPORT_MARGIN = (
         f"{OPTION_PREFIX}-margin",
@@ -109,8 +109,9 @@ class Option(Enum):
             Rendering method for results of zero values.
             number: render as a digit number (0).
             empty: not rendering.
-            Defaults to 'empty' when CI environment variable is set to TRUE (case insensitive);
-            otherwise '{default}'.
+            Automatically set to 'number' when CI environment variable is set to
+            TRUE (case insensitive) to display reports correctly at CI services.
+            Defaults to '{default}'.
             """
         ).format(default=Default.ZEROS),
     )
