@@ -101,6 +101,51 @@ You can set configurations with ``pyproject.toml`` or ``setup.cfg`` as follows.
         md_report_verbose = 0
         md_report_color = auto
 
+
+Add report to pull requests
+--------------------------------------------
+You can add test reports to pull requests by GitHub actions workflow like the below:
+
+.. code-block:: yaml
+
+    name: md-report
+
+    on:
+      pull_request:
+
+    jobs:
+      run-tests:
+        runs-on: ubuntu-latest
+
+        steps:
+          - uses: actions/checkout@v4
+
+          - uses: actions/setup-python@v4
+            with:
+              python-version: '3.11'
+              cache: pip
+
+          - name: Install dependencies
+            run: pip install --upgrade pytest-md-report
+
+          - name: Run tests
+            run: pytest --md-report --md-report-output md_report.md
+
+          - name: Render reports to the PR when tests fail
+            if: failure()
+            env:
+              GH_TOKEN: ${{ github.token }}
+              PR_NUMBER: ${{ github.event.number }}
+            run:
+              gh pr comment $PR_NUMBER --body-file md_report.md 
+
+.. figure:: https://cdn.jsdelivr.net/gh/thombashi/pytest-md-report@master/ss/md-report_gha.png
+    :scale: 80%
+    :alt: https://github.com/thombashi/pytest-md-report/blob/master/ss/md-report_gha.png
+
+    Rendering result
+
+
 Options
 ============================================
 
@@ -122,11 +167,12 @@ Command options
       --md-report-tee       output test report for both standard output and a file. you can also specify the value with PYTEST_MD_REPORT_TEE environment variable.
       --md-report-color={auto,text,never}
                             How coloring output reports.
-                            auto: for terminal output, render colored (text and background) reports using ANSI escape codes.
+                            auto: detect the output destination and colorize reports appropriately with the output.
+                            for terminal output, render colored (text and background) reports using ANSI escape codes.
                             for file output, render the report without color.
                             text: render colored text reports by using ANSI escape codes.
                             never: render report without color.
-                            Defaults to 'ColorPolicy.AUTO'.
+                            Defaults to 'auto'.
                             you can also specify the value with PYTEST_MD_REPORT_COLOR environment variable.
       --md-report-margin=MARGIN
                             Margin size for each cell.
@@ -136,8 +182,9 @@ Command options
                             Rendering method for results of zero values.
                             number: render as a digit number (0).
                             empty: not rendering.
-                            Defaults to 'empty' when CI environment variable is set to TRUE (case insensitive);
-                            otherwise 'number'.
+                            Automatically set to 'number' when CI environment variable is set to
+                            TRUE (case insensitive) to display reports correctly at CI services.
+                            Defaults to 'number'.
                             you can also specify the value with PYTEST_MD_REPORT_ZEROS environment variable.
       --md-report-success-color=MD_REPORT_SUCCESS_COLOR
                             Text color of succeeded results.
@@ -166,8 +213,8 @@ ini-options
   md_report_verbose (string):
                         Verbosity level for pytest-md-report. If not set, use the verbosity level of pytest. Defaults to 0.
   md_report_color (string):
-                        How coloring output reports. auto: for terminal output, render colored (text and background) reports using ANSI escape codes. for file output, render the report without color. text: render colored text reports by using ANSI escape codes. never: render report without color. Defaults to
-                        'ColorPolicy.AUTO'.
+                        How coloring output reports. auto: detect the output destination and colorize reports appropriately with the output. for terminal output, render colored (text and background) reports using ANSI escape codes. for file output, render the report without color. text: render colored text reports by using ANSI
+                        escape codes. never: render report without color. Defaults to 'auto'.
   md_report_output (string):
                         Path to a file to the outputs test report. Overwrite a file content if the file already exists.
   md_report_tee (string):
@@ -175,7 +222,7 @@ ini-options
   md_report_margin (string):
                         Margin size for each cell. Defaults to 1.
   md_report_zeros (string):
-                        Rendering method for results of zero values. number: render as a digit number (0). empty: not rendering. Defaults to 'empty' when CI environment variable is set to TRUE (case insensitive); otherwise 'number'.
+                        Rendering method for results of zero values. number: render as a digit number (0). empty: not rendering. Automatically set to 'number' when CI environment variable is set to TRUE (case insensitive) to display reports correctly at CI services. Defaults to 'number'.
   md_report_success_color (string):
                         Text color of succeeded results. Specify a color name (one of the black/red/green/yellow/blue/magenta/cyan/white/lightblack/lightred/lightgreen/lightyellow/lightblue/lightmagenta/lightcyan/lightwhite) or a color code (e.g. #ff1020). Defaults to 'light_green'.
   md_report_skip_color (string):
