@@ -270,8 +270,8 @@ def retrieve_report_zeros(config: Config) -> str:
     if not report_zeros:
         report_zeros = config.getini(Option.MD_REPORT_ZEROS.inioption_str)
 
-    if not report_zeros and _is_ci():
-        report_zeros = ZerosRender.EMPTY
+    if _is_ci():
+        report_zeros = ZerosRender.NUMBER
 
     if not report_zeros:
         report_zeros = Default.ZEROS
