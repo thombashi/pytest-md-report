@@ -3,6 +3,14 @@ import sys
 from textwrap import dedent
 
 import pytest
+from pytablewriter.writer.text import MarkdownFlavor
+
+from pytest_md_report.plugin import (
+    ColorPolicy,
+    extract_file_color_policy,
+    is_apply_ansi_escape_to_file,
+    is_apply_ansi_escape_to_term,
+)
 
 
 PYFILE_PASS_TEST = dedent(
@@ -60,6 +68,50 @@ def print_test_result(expected, actual, error=None):
     diff = d.compare(expected.splitlines(), actual.splitlines())
     for d in diff:
         print(d)
+
+
+@pytest.mark.parametrize(
+    ["color_policy", "is_output_file", "expected"],
+    [
+        [ColorPolicy.AUTO, False, True],
+        [ColorPolicy.AUTO, True, False],
+        [ColorPolicy.TEXT, False, True],
+        [ColorPolicy.TEXT, True, True],
+        [ColorPolicy.NEVER, False, False],
+        [ColorPolicy.NEVER, True, False],
+    ],
+)
+def test_is_apply_ansi_escape_to_file(color_policy, is_output_file, expected):
+    assert is_apply_ansi_escape_to_file(color_policy, is_output_file) == expected
+
+
+@pytest.mark.parametrize(
+    ["color_policy", "expected"],
+    [
+        [ColorPolicy.AUTO, True],
+        [ColorPolicy.TEXT, True],
+        [ColorPolicy.NEVER, False],
+    ],
+)
+def test_is_apply_ansi_escape_to_term(color_policy, expected):
+    assert is_apply_ansi_escape_to_term(color_policy) == expected
+
+
+@pytest.mark.parametrize(
+    ["color_policy", "is_output_file", "flavor", "expected"],
+    [
+        [ColorPolicy.AUTO, False, MarkdownFlavor.GFM, ColorPolicy.AUTO],
+        [ColorPolicy.AUTO, True, MarkdownFlavor.GFM, ColorPolicy.AUTO],
+        [ColorPolicy.AUTO, False, MarkdownFlavor.COMMON_MARK, ColorPolicy.AUTO],
+        [ColorPolicy.AUTO, True, MarkdownFlavor.COMMON_MARK, ColorPolicy.NEVER],
+        [ColorPolicy.TEXT, False, MarkdownFlavor.GFM, ColorPolicy.TEXT],
+        [ColorPolicy.TEXT, True, MarkdownFlavor.GFM, ColorPolicy.TEXT],
+        [ColorPolicy.NEVER, False, MarkdownFlavor.GFM, ColorPolicy.NEVER],
+        [ColorPolicy.NEVER, True, MarkdownFlavor.GFM, ColorPolicy.NEVER],
+    ],
+)
+def test_extract_file_color_policy(color_policy, is_output_file, flavor, expected):
+    assert extract_file_color_policy(color_policy, is_output_file, flavor) == expected
 
 
 def test_pytest_md_report(testdir):
@@ -165,3 +217,24 @@ def test_pytest_md_report_results_color(testdir, color_option):
     )
 
     assert org_out != ch_color_out
+
+
+def test_pytest_md_report_flavor(testdir):
+    testdir.makepyfile(test_passed=PYFILE_PASS_TEST)
+    testdir.makepyfile(test_skipped=PYFILE_SKIP_TEST)
+    out_dir = testdir.mkdir("outputs")
+    out_file = out_dir.join("report.md")
+    testdir.runpytest("--md-report", "--md-report-flavor", "github", "--md-report-output", out_file)
+
+    with open(out_file) as f:
+        report = f.read()
+        print(report)
+        assert (
+            report
+            == r"""|    filepath     | $$\textcolor{#23d18b}{\tt{passed}}$$ | $$\textcolor{#f5f543}{\tt{skipped}}$$ | SUBTOTAL |
+| --------------- | --------------------------------: | --------------------------------: | -------: |
+| $$\textcolor{#23d18b}{\tt{test\\_passed.py}}$$ |   $$\textcolor{#23d18b}{\tt{1}}$$ |   $$\textcolor{#666666}{\tt{0}}$$ | $$\textcolor{#23d18b}{\tt{1}}$$ |
+| $$\textcolor{#f5f543}{\tt{test\\_skipped.py}}$$ |   $$\textcolor{#666666}{\tt{0}}$$ |   $$\textcolor{#f5f543}{\tt{1}}$$ | $$\textcolor{#f5f543}{\tt{1}}$$ |
+| $$\textcolor{#f5f543}{\tt{TOTAL}}$$ |   $$\textcolor{#23d18b}{\tt{1}}$$ |   $$\textcolor{#f5f543}{\tt{1}}$$ | $$\textcolor{#f5f543}{\tt{2}}$$ |
+"""
+        )

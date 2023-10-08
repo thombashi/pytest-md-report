@@ -1,6 +1,7 @@
 from enum import Enum, unique
 from textwrap import dedent
 
+from pytablewriter.writer.text import MarkdownFlavor
 from tcolorpy import AnsiFGColor
 
 
@@ -41,6 +42,7 @@ class BGColor:
 class Default:
     COLOR_POLICY = ColorPolicy.AUTO
     MARGIN = 1
+    MARKDOWN_FLAVOR = MarkdownFlavor.COMMON_MARK
     ZEROS = ZerosRender.NUMBER
 
     class FGColor:
@@ -144,6 +146,17 @@ class Option(Enum):
             Defaults to '{default}'.
             """
         ).format(names=COLOR_NAMES, default=Default.FGColor.ERROR),
+    )
+    MD_REPORT_FLAVOR = (
+        f"{OPTION_PREFIX}-flavor",
+        dedent(
+            """\
+            Markdown flavor of the output report.
+            Defaults to '{default}'.
+            """
+        ).format(
+            default=Default.MARKDOWN_FLAVOR.value,
+        ),
     )
 
     @property

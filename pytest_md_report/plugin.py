@@ -8,7 +8,8 @@ from _pytest.terminal import TerminalReporter
 from pytablewriter import TableWriterFactory
 from pytablewriter.style import Cell, Style
 from pytablewriter.writer import AbstractTableWriter
-from typepy import Bool, Integer, StrictLevel
+from pytablewriter.writer.text import MarkdownFlavor, normalize_md_flavor
+from typepy import Bool, Integer, StrictLevel, is_not_null_string
 from typepy.error import TypeConversionError
 
 from ._const import BGColor, ColorPolicy, Default, FGColor, Header, HelpMsg, Option, ZerosRender
@@ -93,6 +94,13 @@ def pytest_addoption(parser: Parser) -> None:
         help=Option.MD_REPORT_ERROR_COLOR.help_msg
         + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_ERROR_COLOR.envvar_str),
     )
+    group.addoption(
+        Option.MD_REPORT_FLAVOR.cmdoption_str,
+        choices=[flavor.value for flavor in MarkdownFlavor],
+        default=None,
+        help=Option.MD_REPORT_FLAVOR.help_msg
+        + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_FLAVOR.envvar_str),
+    )
 
     parser.addini(
         Option.MD_REPORT.inioption_str, type="bool", default=False, help=Option.MD_REPORT.help_msg
@@ -130,6 +138,9 @@ def pytest_addoption(parser: Parser) -> None:
         default=None,
         help=Option.MD_REPORT_ERROR_COLOR.help_msg,
     )
+    parser.addini(
+        Option.MD_REPORT_FLAVOR.inioption_str, default=None, help=Option.MD_REPORT_FLAVOR.help_msg
+    )
 
 
 def is_make_md_report(config: Config) -> bool:
@@ -153,6 +164,20 @@ def is_make_md_report(config: Config) -> bool:
         return False
 
     return make_report
+
+
+def is_apply_ansi_escape_to_file(color_policy: ColorPolicy, is_output_file: bool) -> bool:
+    if color_policy == ColorPolicy.TEXT:
+        return True
+
+    if color_policy == ColorPolicy.AUTO and not is_output_file:
+        return True
+
+    return False
+
+
+def is_apply_ansi_escape_to_term(color_policy: ColorPolicy) -> bool:
+    return color_policy in [ColorPolicy.TEXT, ColorPolicy.AUTO]
 
 
 def _is_ci() -> bool:
@@ -229,6 +254,21 @@ def retrieve_tee(config: Config) -> bool:
             tee = bool(inioption_str)
 
     return tee if tee is not None else False
+
+
+def retrieve_md_flavor(config: Config) -> MarkdownFlavor:
+    md_flavor = config.option.md_report_flavor
+
+    if not md_flavor:
+        md_flavor = os.environ.get(Option.MD_REPORT_FLAVOR.envvar_str)
+
+    if not md_flavor:
+        md_flavor = config.getini(Option.MD_REPORT_FLAVOR.inioption_str)
+
+    if not md_flavor:
+        return Default.MARKDOWN_FLAVOR
+
+    return normalize_md_flavor(md_flavor)
 
 
 def retrieve_color_policy(config: Config) -> ColorPolicy:
@@ -458,6 +498,8 @@ def make_md_report(
     reporter: TerminalReporter,
     total_stats: Mapping[str, int],
     color_policy: ColorPolicy,
+    apply_ansi_escape: bool,
+    md_flavor: MarkdownFlavor,
 ) -> str:
     verbosity_level = retrieve_verbosity_level(config)
 
@@ -467,7 +509,9 @@ def make_md_report(
         reporter=reporter, outcomes=outcomes, verbosity_level=verbosity_level
     )
 
-    writer = TableWriterFactory.create_from_format_name("md")
+    writer = TableWriterFactory.create_from_format_name(
+        "md", flavor=md_flavor.value, colorize_terminal=apply_ansi_escape
+    )
 
     matrix = [
         list(key) + [results.get(key, 0) for key in outcomes] + [sum(results.values())]
@@ -520,6 +564,17 @@ def make_md_report(
     return writer.dumps()
 
 
+def extract_file_color_policy(
+    color_policy: ColorPolicy, is_output_file: bool, md_flavor: MarkdownFlavor
+) -> ColorPolicy:
+    file_color_policy = color_policy
+    if is_output_file and color_policy == ColorPolicy.AUTO:
+        if md_flavor != MarkdownFlavor.GFM:
+            file_color_policy = ColorPolicy.NEVER
+
+    return file_color_policy
+
+
 def pytest_unconfigure(config: Config) -> None:
     if not is_make_md_report(config):
         return
@@ -529,19 +584,24 @@ def pytest_unconfigure(config: Config) -> None:
     is_tee = retrieve_tee(config)
     output_filepath = retrieve_output_filepath(config)
     color_policy = retrieve_color_policy(config)
+    md_flavor = retrieve_md_flavor(config)
 
     is_output_term = is_tee or not output_filepath
+    is_output_file = is_not_null_string(output_filepath)
     term_color_policy = color_policy
+    file_color_policy = extract_file_color_policy(color_policy, is_output_file, md_flavor)
 
-    is_output_file = is_tee or output_filepath
-    file_color_policy = color_policy
-    if is_output_file and color_policy == ColorPolicy.AUTO:
-        file_color_policy = ColorPolicy.NEVER
-
+    apply_ansi_escape_to_file = is_apply_ansi_escape_to_file(color_policy, is_output_file)
+    apply_ansi_escape_to_term = is_apply_ansi_escape_to_term(color_policy)
     term_report = None
     if is_output_term:
         term_report = make_md_report(
-            config, reporter, stat_count_map, color_policy=term_color_policy
+            config,
+            reporter,
+            stat_count_map,
+            color_policy=term_color_policy,
+            apply_ansi_escape=apply_ansi_escape_to_term,
+            md_flavor=md_flavor,
         )
         reporter._tw.write(term_report)
 
@@ -549,11 +609,24 @@ def pytest_unconfigure(config: Config) -> None:
         return
 
     file_report = term_report
-    if not file_report or file_color_policy != term_color_policy:
+    gen_report_for_file_output = any(
+        [
+            not file_report,
+            file_color_policy != term_color_policy,
+            apply_ansi_escape_to_file != apply_ansi_escape_to_term,
+        ]
+    )
+    if gen_report_for_file_output:
         file_report = make_md_report(
-            config, reporter, stat_count_map, color_policy=file_color_policy
+            config,
+            reporter,
+            stat_count_map,
+            color_policy=file_color_policy,
+            apply_ansi_escape=apply_ansi_escape_to_file,
+            md_flavor=md_flavor,
         )
 
-    assert output_filepath
-    with open(output_filepath, "w") as f:
-        f.write(file_report)
+    if file_report:
+        assert output_filepath
+        with open(output_filepath, "w") as f:
+            f.write(file_report)
