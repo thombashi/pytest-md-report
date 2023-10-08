@@ -80,6 +80,14 @@ Not rendering results of zero value (``--md-report-zeros emmpty`` option):
     | examples/test_xpassed.py |        |        |       |         |         |       2 |        2 |
     | TOTAL                    |      2 |      2 |     2 |       2 |       2 |       2 |       12 |
 
+Generate GitHub Flavored Markdown (GFM) report:
+
+::
+
+    pytest --md-report --md-report-flavor gfm examples/
+
+GFM rendering result can be seen at `here <https://github.com/thombashi/pytest-md-report/blob/master/examples/gfm_report.md>`__.
+
 
 Config file examples
 --------------------------------------------
