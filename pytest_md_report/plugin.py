@@ -338,6 +338,8 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
     color_policy = cast(ColorPolicy, kwargs["color_policy"])
     color_map = kwargs["color_map"]
     num_rows = cast(int, kwargs["num_rows"])
+    headers = writer.headers
+    header = headers[cell.col]
     fg_color = None
     bg_color = None
 
@@ -345,19 +347,28 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
     if cell.value == 0:
         is_grayout = True
 
+    retriever = ColorRetriever(cell.row, is_grayout, color_policy, color_map)
+
     if cell.is_header_row():
         if all([writer.value_matrix[r][cell.col] == 0 for r in range(len(writer.value_matrix))]):
-            return Style(color=color_map[FGColor.GRAYOUT], font_weight="bold")
+            return Style(color=color_map[FGColor.GRAYOUT])
 
-        return Style(font_weight="bold")
+        if header in ("passed"):
+            fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.SUCCESS])
+        elif header in ("failed", "error"):
+            fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.ERROR])
+        elif header in ("skipped", "xfailed", "xpassed"):
+            fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.SKIP])
+        else:
+            return None
 
-    retriever = ColorRetriever(cell.row, is_grayout, color_policy, color_map)
+        return Style(color=fg_color)
+
     is_passed = False
     is_failed = False
     is_skipped = False
 
-    headers = writer.headers
-    if headers[cell.col] in (Header.FILEPATH, Header.TESTFUNC, Header.SUBTOTAL):
+    if header in (Header.FILEPATH, Header.TESTFUNC, Header.SUBTOTAL):
         error_ct_list = []
         if "failed" in headers:
             error_ct_list.append(writer.value_matrix[cell.row][headers.index("failed")])
@@ -379,11 +390,11 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
         is_skipped = skip_ct > 0
         is_passed = error_ct == 0 and skip_ct == 0
 
-    if is_passed or headers[cell.col] in ("passed"):
+    if is_passed or header in ("passed"):
         fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.SUCCESS])
-    elif is_failed or headers[cell.col] in ("failed", "error"):
+    elif is_failed or header in ("failed", "error"):
         fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.ERROR])
-    elif is_skipped or headers[cell.col] in ("skipped", "xfailed", "xpassed"):
+    elif is_skipped or header in ("skipped", "xfailed", "xpassed"):
         fg_color, bg_color = retriever.retrieve_fg_bg_color(color_map[FGColor.SKIP])
 
     if cell.row == num_rows - 1:
