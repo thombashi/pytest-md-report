@@ -48,7 +48,9 @@ setup: setup-ci
 
 .PHONY: examples
 examples:
-	cd examples; pytest .
+	cd examples; \
+	pytest .; \
+	pytest . --md-report-flavor gfm --md-report-output gfm_report.md
 
 .PHONY: test
 test:
