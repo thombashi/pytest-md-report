@@ -129,7 +129,7 @@ You can add test reports to pull requests by GitHub actions workflow like the be
             run: pip install --upgrade pytest-md-report
 
           - name: Run tests
-            run: pytest --md-report --md-report-output md_report.md
+            run: pytest --md-report --md-report-flavor gfm --md-report-output md_report.md
 
           - name: Render reports to the PR when tests fail
             if: failure()
