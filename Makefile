@@ -49,3 +49,7 @@ setup: setup-ci
 .PHONY: examples
 examples:
 	cd examples; pytest .
+
+.PHONY: test
+test:
+	$(PYTHON) -m tox -e py
