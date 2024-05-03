@@ -1,6 +1,6 @@
 import os
 from collections import defaultdict
-from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 from _pytest.config import Config
 from _pytest.config.argparsing import Parser
@@ -100,6 +100,13 @@ def pytest_addoption(parser: Parser) -> None:
         help=Option.MD_REPORT_FLAVOR.help_msg
         + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_REPORT_FLAVOR.envvar_str),
     )
+    group.addoption(
+        Option.MD_EXCLUDE_OUTCOMES.cmdoption_str,
+        nargs="+",
+        default=[],
+        help=Option.MD_EXCLUDE_OUTCOMES.help_msg
+        + HelpMsg.EXTRA_MSG_TEMPLATE.format(Option.MD_EXCLUDE_OUTCOMES.envvar_str),
+    )
 
     parser.addini(
         Option.MD_REPORT.inioption_str,
@@ -156,6 +163,12 @@ def pytest_addoption(parser: Parser) -> None:
         Option.MD_REPORT_FLAVOR.inioption_str,
         default=None,
         help=Option.MD_REPORT_FLAVOR.help_msg,
+    )
+    parser.addini(
+        Option.MD_EXCLUDE_OUTCOMES.inioption_str,
+        type="args",
+        default=[],
+        help=Option.MD_EXCLUDE_OUTCOMES.help_msg,
     )
 
 
@@ -298,6 +311,33 @@ def retrieve_md_flavor(config: Config) -> MarkdownFlavor:
     return normalize_md_flavor(str(md_flavor))
 
 
+def retrieve_exclude_outcomes(config: Config) -> List[str]:
+    def norm_names(names: Sequence[Any]) -> List[str]:
+        return [str(name).lower().strip() for name in names]
+
+    exclude_outcomes = config.option.md_report_exclude_outcomes
+
+    if not exclude_outcomes:
+        exclude_outcomes = os.environ.get(Option.MD_EXCLUDE_OUTCOMES.envvar_str)
+        if exclude_outcomes:
+            return norm_names(exclude_outcomes.split(","))
+
+    if not exclude_outcomes:
+        exclude_outcomes = config.getini(Option.MD_EXCLUDE_OUTCOMES.inioption_str)
+
+    if not exclude_outcomes:
+        return Default.EXCLUDE_RESULTS
+
+    if isinstance(exclude_outcomes, list):
+        # list will be passed via pytest config file
+        return norm_names(exclude_outcomes)
+    elif isinstance(exclude_outcomes, str):
+        # comma-separated string (e.g. passed,skipped) will be passed via the command line option
+        return norm_names(exclude_outcomes.split(","))
+
+    raise TypeError(f"Unexpected type {type(exclude_outcomes)} for exclude_outcomes")
+
+
 def retrieve_color_policy(config: Config) -> ColorPolicy:
     color_policy = config.option.md_report_color
 
@@ -417,11 +457,17 @@ def make_md_report(
     color_policy: ColorPolicy,
     apply_ansi_escape: bool,
     md_flavor: MarkdownFlavor,
+    exclude_outcomes: List[str],
 ) -> str:
     verbosity_level = retrieve_verbosity_level(config)
 
     outcomes = ["passed", "failed", "error", "skipped", "xfailed", "xpassed"]
+    outcomes = [key for key in outcomes if key not in exclude_outcomes]
     outcomes = [key for key in outcomes if total_stats.get(key, 0) > 0]
+
+    if not outcomes:
+        return ""
+
     results_per_testfunc = extract_pytest_stats(
         reporter=reporter, outcomes=outcomes, verbosity_level=verbosity_level
     )
@@ -505,6 +551,7 @@ def pytest_unconfigure(config: Config) -> None:
     output_filepath = retrieve_output_filepath(config)
     color_policy = retrieve_color_policy(config)
     md_flavor = retrieve_md_flavor(config)
+    exclude_outcomes = retrieve_exclude_outcomes(config)
 
     is_output_term = is_tee or not output_filepath
     is_output_file = is_not_null_string(output_filepath)
@@ -522,6 +569,7 @@ def pytest_unconfigure(config: Config) -> None:
             color_policy=term_color_policy,
             apply_ansi_escape=apply_ansi_escape_to_term,
             md_flavor=md_flavor,
+            exclude_outcomes=exclude_outcomes,
         )
         reporter._tw.write(term_report)
 
@@ -544,6 +592,7 @@ def pytest_unconfigure(config: Config) -> None:
             color_policy=file_color_policy,
             apply_ansi_escape=apply_ansi_escape_to_file,
             md_flavor=md_flavor,
+            exclude_outcomes=exclude_outcomes,
         )
 
     if file_report:

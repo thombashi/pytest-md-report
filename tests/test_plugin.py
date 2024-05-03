@@ -242,3 +242,29 @@ def test_pytest_md_report_flavor(testdir):
 | $$\textcolor{#f5f543}{\tt{TOTAL}}$$ |   $$\textcolor{#23d18b}{\tt{1}}$$ |   $$\textcolor{#f5f543}{\tt{1}}$$ | $$\textcolor{#f5f543}{\tt{2}}$$ |
 """
         )
+
+
+def test_pytest_md_report_exclude_outcomes(testdir):
+    testdir.makepyfile(PYFILE_MIX_TESTS)
+    expected = dedent(
+        """\
+        |                 filepath                  | failed | error | xfailed | SUBTOTAL |
+        | ----------------------------------------- | -----: | ----: | ------: | -------: |
+        | test_pytest_md_report_exclude_outcomes.py |      1 |     1 |       1 |        3 |
+        | TOTAL                                     |      1 |     1 |       1 |        6 |
+        """
+    )
+    output_filepath = testdir.tmpdir.join("report.md")
+    testdir.runpytest(
+        "--md-report",
+        "--md-report-exclude-outcomes",
+        "passed",
+        "skipped",
+        "xpassed",
+        "--md-report-output",
+        output_filepath,
+    )
+    with open(output_filepath) as f:
+        report = f.read()
+        print(report)
+        assert report == expected

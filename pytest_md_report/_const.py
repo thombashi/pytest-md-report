@@ -1,5 +1,6 @@
 from enum import Enum, unique
 from textwrap import dedent
+from typing import List
 
 from pytablewriter.writer.text import MarkdownFlavor
 from tcolorpy import AnsiFGColor
@@ -44,6 +45,7 @@ class Default:
     MARGIN = 1
     MARKDOWN_FLAVOR = MarkdownFlavor.COMMON_MARK
     ZEROS = ZerosRender.NUMBER
+    EXCLUDE_RESULTS: List[str] = []
 
     class FGColor:
         SUCCESS = "light_green"
@@ -156,6 +158,19 @@ class Option(Enum):
             """
         ).format(
             default=Default.MARKDOWN_FLAVOR.value,
+        ),
+    )
+    MD_EXCLUDE_OUTCOMES = (
+        f"{OPTION_PREFIX}-exclude-outcomes",
+        dedent(
+            """\
+            List of test outcomes to exclude from the report.
+            When specifying as an environment variable, pass a comma-separated string
+            (e.g. 'passed,skipped').
+            Defaults to '{default}'.
+            """
+        ).format(
+            default=Default.EXCLUDE_RESULTS,
         ),
     )
 
