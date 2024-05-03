@@ -57,7 +57,7 @@ OPTION_PREFIX = "md-report"
 
 @unique
 class Option(Enum):
-    MD_REPORT = (OPTION_PREFIX, "Create Markdown report.")
+    MD_REPORT = (OPTION_PREFIX, "Create a Markdown report.")
     MD_REPORT_VERBOSE = (
         f"{OPTION_PREFIX}-verbose",
         dedent(
@@ -111,7 +111,7 @@ class Option(Enum):
             Rendering method for results of zero values.
             number: render as a digit number (0).
             empty: not rendering.
-            Automatically set to 'number' when CI environment variable is set to
+            Automatically set to 'number' when the CI environment variable is set to
             TRUE (case insensitive) to display reports correctly at CI services.
             Defaults to '{default}'.
             """
