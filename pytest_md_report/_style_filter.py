@@ -8,7 +8,11 @@ from ._const import BGColor, ColorPolicy, FGColor, Header
 
 class ColorRetriever:
     def __init__(
-        self, row: int, is_grayout: bool, color_polilcy: ColorPolicy, color_map: Dict[str, str]
+        self,
+        row: int,
+        is_grayout: bool,
+        color_polilcy: ColorPolicy,
+        color_map: Dict[str, str],
     ) -> None:
         self.__row = row
         self.__is_grayout = is_grayout

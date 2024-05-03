@@ -141,7 +141,11 @@ def test_pytest_md_report_output(testdir):
     )
     output_filepath = testdir.tmpdir.join("report.md")
     result = testdir.runpytest(
-        "--md-report", "--md-report-color", "never", "--md-report-output", output_filepath
+        "--md-report",
+        "--md-report-color",
+        "never",
+        "--md-report-output",
+        output_filepath,
     )
     out = "\n".join(result.outlines[-4:])
     assert out != expected

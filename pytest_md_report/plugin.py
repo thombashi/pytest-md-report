@@ -102,25 +102,40 @@ def pytest_addoption(parser: Parser) -> None:
     )
 
     parser.addini(
-        Option.MD_REPORT.inioption_str, type="bool", default=False, help=Option.MD_REPORT.help_msg
+        Option.MD_REPORT.inioption_str,
+        type="bool",
+        default=False,
+        help=Option.MD_REPORT.help_msg,
     )
     parser.addini(
-        Option.MD_REPORT_VERBOSE.inioption_str, default=None, help=Option.MD_REPORT_VERBOSE.help_msg
+        Option.MD_REPORT_VERBOSE.inioption_str,
+        default=None,
+        help=Option.MD_REPORT_VERBOSE.help_msg,
     )
     parser.addini(
-        Option.MD_REPORT_COLOR.inioption_str, default=None, help=Option.MD_REPORT_COLOR.help_msg
+        Option.MD_REPORT_COLOR.inioption_str,
+        default=None,
+        help=Option.MD_REPORT_COLOR.help_msg,
     )
     parser.addini(
-        Option.MD_REPORT_OUTPUT.inioption_str, default=None, help=Option.MD_REPORT_OUTPUT.help_msg
+        Option.MD_REPORT_OUTPUT.inioption_str,
+        default=None,
+        help=Option.MD_REPORT_OUTPUT.help_msg,
     )
     parser.addini(
-        Option.MD_REPORT_TEE.inioption_str, default=None, help=Option.MD_REPORT_TEE.help_msg
+        Option.MD_REPORT_TEE.inioption_str,
+        default=None,
+        help=Option.MD_REPORT_TEE.help_msg,
     )
     parser.addini(
-        Option.MD_REPORT_MARGIN.inioption_str, default=None, help=Option.MD_REPORT_MARGIN.help_msg
+        Option.MD_REPORT_MARGIN.inioption_str,
+        default=None,
+        help=Option.MD_REPORT_MARGIN.help_msg,
     )
     parser.addini(
-        Option.MD_REPORT_ZEROS.inioption_str, default=None, help=Option.MD_REPORT_ZEROS.help_msg
+        Option.MD_REPORT_ZEROS.inioption_str,
+        default=None,
+        help=Option.MD_REPORT_ZEROS.help_msg,
     )
     parser.addini(
         Option.MD_REPORT_SUCCESS_COLOR.inioption_str,
@@ -138,7 +153,9 @@ def pytest_addoption(parser: Parser) -> None:
         help=Option.MD_REPORT_ERROR_COLOR.help_msg,
     )
     parser.addini(
-        Option.MD_REPORT_FLAVOR.inioption_str, default=None, help=Option.MD_REPORT_FLAVOR.help_msg
+        Option.MD_REPORT_FLAVOR.inioption_str,
+        default=None,
+        help=Option.MD_REPORT_FLAVOR.help_msg,
     )
 
 
@@ -151,7 +168,8 @@ def is_make_md_report(config: Config) -> bool:
     if make_report is None:
         try:
             make_report = Bool(
-                os.environ.get(Option.MD_REPORT.envvar_str), strict_level=StrictLevel.MIN
+                os.environ.get(Option.MD_REPORT.envvar_str),
+                strict_level=StrictLevel.MIN,
             ).convert()
         except TypeConversionError:
             make_report = None
