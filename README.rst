@@ -5,28 +5,29 @@
 
 Summary
 ============================================
-.. image:: https://badge.fury.io/py/pytest-md-report.svg
+|PyPI pkg ver| |Supported Python ver| |Supported Python impl| |CI status| |CodeQL|
+
+.. |PyPI pkg ver| image:: https://badge.fury.io/py/pytest-md-report.svg
     :target: https://badge.fury.io/py/pytest-md-report
     :alt: PyPI package version
 
-.. image:: https://img.shields.io/pypi/pyversions/pytest-md-report.svg
-    :target: https://pypi.org/project/pytest-md-report
-    :alt: Supported Python versions
-
-.. image:: https://img.shields.io/pypi/implementation/pytest-md-report.svg
+.. |Supported Python impl| image:: https://img.shields.io/pypi/implementation/pytest-md-report.svg
     :target: https://pypi.org/project/pytest-md-report
     :alt: Supported Python implementations
 
-.. image:: https://github.com/thombashi/pytest-md-report/workflows/Tests/badge.svg
-    :target: https://github.com/thombashi/pytest-md-report/actions?query=workflow%3ATests
-    :alt: Linux/macOS/Windows CI status
+.. |Supported Python ver| image:: https://img.shields.io/pypi/pyversions/pytest-md-report.svg
+    :target: https://pypi.org/project/pytest-md-report
+    :alt: Supported Python versions
 
-.. image:: https://github.com/thombashi/pytest-md-report/actions/workflows/github-code-scanning/codeql/badge.svg
+.. |CI status| image:: https://github.com/thombashi/pytest-md-report/actions/workflows/ci.yml/badge.svg
+    :target: https://github.com/thombashi/pytest-md-report/actions/workflows/ci.yml
+    :alt: CI status of Linux/macOS/Windows
+
+.. |CodeQL| image:: https://github.com/thombashi/pytest-md-report/actions/workflows/github-code-scanning/codeql/badge.svg
     :target: https://github.com/thombashi/pytest-md-report/actions/workflows/github-code-scanning/codeql
     :alt: CodeQL
 
-A pytest plugin to make test results report with Markdown table format.
-
+A pytest plugin to generate test outcomes reports with markdown table format.
 
 Installation
 ============================================
@@ -111,7 +112,7 @@ You can set configurations with ``pyproject.toml`` or ``setup.cfg`` as follows.
 
 
 Add report to pull requests
---------------------------------------------
+-----------------------------------------------
 You can add test reports to pull requests by GitHub actions workflow like the below:
 
 .. code-block:: yaml
@@ -124,32 +125,93 @@ You can add test reports to pull requests by GitHub actions workflow like the be
     jobs:
       run-tests:
         runs-on: ubuntu-latest
+        permissions:
+          contents: read
+          pull-requests: write
 
         steps:
           - uses: actions/checkout@v4
 
-          - uses: actions/setup-python@v4
+          - uses: actions/setup-python@v5
             with:
-              python-version: '3.11'
+              python-version: '3.12'
               cache: pip
 
           - name: Install dependencies
             run: pip install --upgrade pytest-md-report
 
           - name: Run tests
-            run: pytest --md-report --md-report-flavor gfm --md-report-output md_report.md
+            run: |
+              report_file=md_report.md
+              echo "REPORT_FILE=${report_file}" >> "$GITHUB_ENV"
+              pytest --md-report --md-report-flavor gfm --md-report-output "$report_file"
 
           - name: Render reports to the PR when tests fail
             if: failure()
             env:
               GH_TOKEN: ${{ github.token }}
               PR_NUMBER: ${{ github.event.number }}
-            run:
-              gh pr comment $PR_NUMBER --body-file md_report.md 
+            run: |
+              if [ -f "$REPORT_FILE" ]; then
+                gh pr comment $PR_NUMBER --body-file "$REPORT_FILE"
+              fi
 
 .. figure:: https://cdn.jsdelivr.net/gh/thombashi/pytest-md-report@master/ss/md-report_gha.png
     :scale: 80%
     :alt: https://github.com/thombashi/pytest-md-report/blob/master/ss/md-report_gha.png
+
+    Rendering result
+
+
+Add report to pull requests: only failed tests
+-----------------------------------------------
+You can exclude specific test outcomes from the report by using the ``--md-report-exclude-outcomes`` option.
+The below example excludes ``passed``, ``skipped``, and ``xpassed`` test outcomes from the report and posts the report to the pull request when tests fail with verbose output.
+
+.. code-block:: yaml
+
+    name: md-report
+
+    on:
+      pull_request:
+
+    jobs:
+      run-tests:
+        runs-on: ubuntu-latest
+        permissions:
+          contents: read
+          pull-requests: write
+
+        steps:
+          - uses: actions/checkout@v4
+
+          - uses: actions/setup-python@v5
+            with:
+              python-version: '3.12'
+              cache: pip
+
+          - name: Install dependencies
+            run: pip install --upgrade pytest-md-report
+
+          - name: Run tests
+            run: |
+              report_file=md_report.md
+              echo "REPORT_FILE=${report_file}" >> "$GITHUB_ENV"
+              pytest -v --md-report --md-report-flavor gfm --md-report-exclude-outcomes passed skipped xpassed --md-report-output "$report_file"
+
+          - name: Render reports to the PR when tests fail
+            if: failure()
+            env:
+              GH_TOKEN: ${{ github.token }}
+              PR_NUMBER: ${{ github.event.number }}
+            run: |
+              if [ -f "$REPORT_FILE" ]; then
+                gh pr comment $PR_NUMBER --body-file "$REPORT_FILE"
+              fi
+
+.. figure:: https://cdn.jsdelivr.net/gh/thombashi/pytest-md-report@master/ss/md-report_exclude_outcomes_verbose_output.png
+    :scale: 80%
+    :alt: https://github.com/thombashi/pytest-md-report/blob/master/ss/md-report_exclude_outcomes_verbose_output.png
 
     Rendering result
 
@@ -161,8 +223,8 @@ Command options
 --------------------------------------------
 ::
 
-    make test results report with markdown table format:
-      --md-report           Create Markdown report. you can also specify the value
+    generate test outcomes report with markdown table format:
+      --md-report           Create a Markdown report. you can also specify the value
                             with PYTEST_MD_REPORT environment variable.
       --md-report-verbose=VERBOSITY_LEVEL
                             Verbosity level for pytest-md-report.
@@ -200,7 +262,7 @@ Command options
                             Rendering method for results of zero values.
                             number: render as a digit number (0).
                             empty: not rendering.
-                            Automatically set to 'number' when CI environment
+                            Automatically set to 'number' when the CI environment
                             variable is set to
                             TRUE (case insensitive) to display reports correctly at
                             CI services.
@@ -239,6 +301,14 @@ Command options
                             Defaults to 'common_mark'.
                             you can also specify the value with
                             PYTEST_MD_REPORT_FLAVOR environment variable.
+      --md-report-exclude-outcomes=MD_REPORT_EXCLUDE_OUTCOMES [MD_REPORT_EXCLUDE_OUTCOMES ...]
+                            List of test outcomes to exclude from the report.
+                            When specifying as an environment variable, pass a
+                            comma-separated string
+                            (e.g. 'passed,skipped').
+                            Defaults to '[]'.
+                            you can also specify the value with
+                            PYTEST_MD_REPORT_EXCLUDE_OUTCOMES environment variable.
 
 
 ini-options
@@ -247,7 +317,7 @@ ini-options
 
 ::
 
-  md_report (bool):     Create Markdown report.
+  md_report (bool):     Create a Markdown report.
   md_report_verbose (string):
                         Verbosity level for pytest-md-report. If not set, use
                         the verbosity level of pytest. Defaults to 0.
@@ -269,7 +339,7 @@ ini-options
   md_report_zeros (string):
                         Rendering method for results of zero values. number:
                         render as a digit number (0). empty: not rendering.
-                        Automatically set to 'number' when CI environment
+                        Automatically set to 'number' when the CI environment
                         variable is set to TRUE (case insensitive) to display
                         reports correctly at CI services. Defaults to 'number'.
   md_report_success_color (string):
@@ -293,6 +363,11 @@ ini-options
   md_report_flavor (string):
                         Markdown flavor of the output report. Defaults to
                         'common_mark'.
+  md_report_exclude_outcomes (args):
+                        List of test outcomes to exclude from the report. When
+                        specifying as an environment variable, pass a
+                        comma-separated string (e.g. 'passed,skipped'). Defaults
+                        to '[]'.
 
 
 Dependencies
