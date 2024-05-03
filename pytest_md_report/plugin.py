@@ -22,7 +22,7 @@ def zero_to_nullstr(value: Any) -> Any:
 
 
 def pytest_addoption(parser: Parser) -> None:
-    group = parser.getgroup("md report", "make test results report with markdown table format")
+    group = parser.getgroup("md report", "generate test outcomes report with markdown table format")
 
     group.addoption(
         Option.MD_REPORT.cmdoption_str,
