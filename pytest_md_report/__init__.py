@@ -8,4 +8,9 @@ __all__ = (
     "ZerosRender",
     "make_md_report",
     "retrieve_stat_count_map",
+    "__author__",
+    "__copyright__",
+    "__email__",
+    "__license__",
+    "__version__",
 )
