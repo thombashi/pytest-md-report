@@ -50,6 +50,7 @@ setup-dev: setup-ci
 examples:
 	cd examples; \
 	pytest .; \
+	pytest . --md-report-exclude-outcomes failed error xfailed -v ; \
 	pytest . --md-report-flavor gfm --md-report-output gfm_report.md
 
 .PHONY: test

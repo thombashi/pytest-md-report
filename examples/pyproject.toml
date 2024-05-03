@@ -1,6 +1,10 @@
 [tool.pytest.ini_options]
 md_report = true
-md_report_verbose = 0
 md_report_color = "auto"
 md_report_output = "report.md"
 md_report_tee = true
+md_report_exclude_outcomes = [
+  "passed",
+  "skipped",
+  "xpassed",
+]
