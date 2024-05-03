@@ -179,22 +179,10 @@ def is_make_md_report(config: Config) -> bool:
     make_report: Optional[bool] = config.option.md_report
 
     if make_report is None:
-        try:
-            make_report = Bool(
-                os.environ.get(Option.MD_REPORT.envvar_str),
-                strict_level=StrictLevel.MIN,
-            ).convert()
-        except TypeConversionError:
-            make_report = None
+        make_report = _to_bool(os.environ.get(Option.MD_REPORT.envvar_str))
 
     if make_report is None:
-        try:
-            make_report = Bool(
-                config.getini(Option.MD_REPORT.inioption_str),
-                strict_level=StrictLevel.MIN,
-            ).convert()
-        except TypeConversionError:
-            make_report = None
+        make_report = _to_bool(config.getini(Option.MD_REPORT.inioption_str))
 
     if make_report is None:
         return False
@@ -243,7 +231,18 @@ def _to_int(value: Any) -> Optional[int]:
     try:
         return Integer(value, strict_level=StrictLevel.MIN).convert()
     except TypeConversionError:
-        return None
+        pass
+
+    return None
+
+
+def _to_bool(value: Any) -> Optional[bool]:
+    try:
+        return Bool(value, strict_level=StrictLevel.MIN).convert()
+    except TypeConversionError:
+        pass
+
+    return None
 
 
 def retrieve_verbosity_level(config: Config) -> int:
