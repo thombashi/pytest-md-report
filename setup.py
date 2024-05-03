@@ -39,7 +39,7 @@ setuptools.setup(
     url=REPOSITORY_URL,
     author=pkg_info["__author__"],
     author_email=pkg_info["__email__"],
-    description="A pytest plugin to make a test results report with Markdown table format.",
+    description="A pytest plugin to generate test outcomes reports with markdown table format.",
     include_package_data=True,
     keywords=["pytest", "plugin", "markdown"],
     license=pkg_info["__license__"],
