@@ -259,6 +259,7 @@ def retrieve_verbosity_level(config: Config) -> int:
         verbosity_level = _to_int(config.getini(Option.MD_REPORT_VERBOSE.inioption_str))
 
     if verbosity_level is None:
+        # use the verbosity level of the pytest if not set
         return config.option.verbose
 
     return verbosity_level
