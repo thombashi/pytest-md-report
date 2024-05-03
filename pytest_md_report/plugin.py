@@ -175,7 +175,13 @@ def is_make_md_report(config: Config) -> bool:
             make_report = None
 
     if make_report is None:
-        make_report = config.getini(Option.MD_REPORT.inioption_str)
+        try:
+            make_report = Bool(
+                config.getini(Option.MD_REPORT.inioption_str),
+                strict_level=StrictLevel.MIN,
+            ).convert()
+        except TypeConversionError:
+            make_report = None
 
     if make_report is None:
         return False
@@ -240,7 +246,7 @@ def retrieve_verbosity_level(config: Config) -> int:
         verbosity_level = _to_int(config.getini(Option.MD_REPORT_VERBOSE.inioption_str))
 
     if verbosity_level is None:
-        verbosity_level = config.option.verbose
+        return config.option.verbose
 
     return verbosity_level
 
@@ -252,7 +258,11 @@ def retrieve_output_filepath(config: Config) -> Optional[str]:
         output_filepath = os.environ.get(Option.MD_REPORT_OUTPUT.envvar_str)
 
     if not output_filepath:
-        output_filepath = config.getini(Option.MD_REPORT_OUTPUT.inioption_str)
+        value = config.getini(Option.MD_REPORT_OUTPUT.inioption_str)
+        if value is None:
+            return None
+        else:
+            return str(value)
 
     return output_filepath
 
@@ -285,7 +295,7 @@ def retrieve_md_flavor(config: Config) -> MarkdownFlavor:
     if not md_flavor:
         return Default.MARKDOWN_FLAVOR
 
-    return normalize_md_flavor(md_flavor)
+    return normalize_md_flavor(str(md_flavor))
 
 
 def retrieve_color_policy(config: Config) -> ColorPolicy:
@@ -300,7 +310,7 @@ def retrieve_color_policy(config: Config) -> ColorPolicy:
     if not color_policy:
         return Default.COLOR_POLICY
 
-    return ColorPolicy[color_policy.upper()]
+    return ColorPolicy[str(color_policy).upper()]
 
 
 def retrieve_report_margin(config: Config) -> int:
@@ -333,7 +343,7 @@ def retrieve_report_zeros(config: Config) -> str:
     if not report_zeros:
         report_zeros = Default.ZEROS
 
-    return report_zeros
+    return str(report_zeros)
 
 
 def retrieve_report_results_color(config: Config, color_option: Option, default: str) -> str:
@@ -348,7 +358,7 @@ def retrieve_report_results_color(config: Config, color_option: Option, default:
     if not results_color:
         results_color = default
 
-    return results_color
+    return str(results_color)
 
 
 def _normalize_stat_name(name: str) -> str:
@@ -389,9 +399,12 @@ def extract_pytest_stats(
                 key: Tuple = (filesystempath,)
             elif verbosity_level >= 1:
                 key = (filesystempath, testfunc)
+            else:
+                continue
 
             if key not in results_per_testfunc:
                 results_per_testfunc[key] = defaultdict(int)
+
             results_per_testfunc[key][stat_key] += 1
 
     return results_per_testfunc
@@ -484,6 +497,9 @@ def pytest_unconfigure(config: Config) -> None:
         return
 
     reporter = config.pluginmanager.get_plugin("terminalreporter")
+    if reporter is None:
+        return
+
     stat_count_map = retrieve_stat_count_map(reporter)
     is_tee = retrieve_tee(config)
     output_filepath = retrieve_output_filepath(config)
