@@ -10,25 +10,6 @@ requires = [
 version_scheme = "guess-next-dev"
 local_scheme = "no-local-version"
 
-[tool.black]
-line-length = 100
-exclude = '''
-/(
-      \.eggs
-    | \.git
-    | \.mypy_cache
-    | \.tox
-    | \.venv
-    | \.pytype
-    | _build
-    | buck-out
-    | build
-    | dist
-)/
-| docs/conf.py
-'''
-target-version = ['py37', 'py38', 'py39', 'py310', 'py311', 'py312']
-
 [tool.isort]
 known_third_party = [
     "mock",
