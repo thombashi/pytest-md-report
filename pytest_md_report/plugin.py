@@ -457,9 +457,9 @@ def make_md_report(
     color_policy: ColorPolicy,
     apply_ansi_escape: bool,
     md_flavor: MarkdownFlavor,
-    exclude_outcomes: List[str],
 ) -> str:
     verbosity_level = retrieve_verbosity_level(config)
+    exclude_outcomes = retrieve_exclude_outcomes(config)
 
     outcomes = ["passed", "failed", "error", "skipped", "xfailed", "xpassed"]
     outcomes = [key for key in outcomes if key not in exclude_outcomes]
@@ -551,7 +551,6 @@ def pytest_unconfigure(config: Config) -> None:
     output_filepath = retrieve_output_filepath(config)
     color_policy = retrieve_color_policy(config)
     md_flavor = retrieve_md_flavor(config)
-    exclude_outcomes = retrieve_exclude_outcomes(config)
 
     is_output_term = is_tee or not output_filepath
     is_output_file = is_not_null_string(output_filepath)
@@ -569,7 +568,6 @@ def pytest_unconfigure(config: Config) -> None:
             color_policy=term_color_policy,
             apply_ansi_escape=apply_ansi_escape_to_term,
             md_flavor=md_flavor,
-            exclude_outcomes=exclude_outcomes,
         )
         reporter._tw.write(term_report)
 
@@ -592,7 +590,6 @@ def pytest_unconfigure(config: Config) -> None:
             color_policy=file_color_policy,
             apply_ansi_escape=apply_ansi_escape_to_file,
             md_flavor=md_flavor,
-            exclude_outcomes=exclude_outcomes,
         )
 
     if file_report:
