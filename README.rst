@@ -266,9 +266,9 @@ The below example adds test reports to the job summary of the GitHub action work
                 echo "</details>" >> $GITHUB_STEP_SUMMARY
               fi
 
-.. figure:: https://cdn.jsdelivr.net/gh/thombashi/pytest-md-report@master/ss/md-md-report_job-summary_full.png
+.. figure:: https://cdn.jsdelivr.net/gh/thombashi/pytest-md-report@master/ss/md-report_job-summary_full.png
     :scale: 80%
-    :alt: https://github.com/thombashi/pytest-md-report/blob/master/ss/md-md-report_job-summary_full.png
+    :alt: https://github.com/thombashi/pytest-md-report/blob/master/ss/md-report_job-summary_full.png
 
     Rendering result
 
