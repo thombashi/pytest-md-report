@@ -117,7 +117,7 @@ You can add test reports to pull requests by GitHub actions workflow like the be
 
 .. code-block:: yaml
 
-    name: md-report
+    name: md-report - pull request example
 
     on:
       pull_request:
@@ -141,20 +141,20 @@ You can add test reports to pull requests by GitHub actions workflow like the be
             run: pip install --upgrade pytest-md-report
 
           - name: Run tests
-            run: |
-              report_file=md_report.md
-              echo "REPORT_FILE=${report_file}" >> "$GITHUB_ENV"
-              pytest --md-report --md-report-flavor gfm --md-report-output "$report_file"
-
-          - name: Render reports to the PR when tests fail
-            if: failure()
             env:
-              GH_TOKEN: ${{ github.token }}
-              PR_NUMBER: ${{ github.event.number }}
+              REPORT_OUTPUT: md_report.md
+            shell: bash
             run: |
-              if [ -f "$REPORT_FILE" ]; then
-                gh pr comment $PR_NUMBER --body-file "$REPORT_FILE"
-              fi
+              echo "REPORT_FILE=${REPORT_OUTPUT}" >> "$GITHUB_ENV"
+              pytest -v --md-report --md-report-flavor gfm --md-report-exclude-outcomes passed skipped xpassed --md-report-output "$REPORT_OUTPUT"
+
+          - name: Render the report to the PR when tests fail
+            uses: marocchino/sticky-pull-request-comment@v2
+            if: failure()
+            with:
+              header: test-report
+              recreate: true
+              path: ${{ env.REPORT_FILE }}
 
 .. figure:: https://cdn.jsdelivr.net/gh/thombashi/pytest-md-report@master/ss/md-report_gha.png
     :scale: 80%
@@ -170,7 +170,7 @@ The below example excludes ``passed``, ``skipped``, and ``xpassed`` test outcome
 
 .. code-block:: yaml
 
-    name: md-report
+    name: md-report - pull request example
 
     on:
       pull_request:
@@ -194,24 +194,81 @@ The below example excludes ``passed``, ``skipped``, and ``xpassed`` test outcome
             run: pip install --upgrade pytest-md-report
 
           - name: Run tests
+            env:
+              REPORT_OUTPUT: md_report.md
+            shell: bash
             run: |
-              report_file=md_report.md
               echo "REPORT_FILE=${report_file}" >> "$GITHUB_ENV"
               pytest -v --md-report --md-report-flavor gfm --md-report-exclude-outcomes passed skipped xpassed --md-report-output "$report_file"
 
-          - name: Render reports to the PR when tests fail
+          - name: Render the report to the PR when tests fail
+            uses: marocchino/sticky-pull-request-comment@v2
             if: failure()
-            env:
-              GH_TOKEN: ${{ github.token }}
-              PR_NUMBER: ${{ github.event.number }}
-            run: |
-              if [ -f "$REPORT_FILE" ]; then
-                gh pr comment $PR_NUMBER --body-file "$REPORT_FILE"
-              fi
+            with:
+              header: test-report
+              recreate: true
+              path: ${{ env.REPORT_FILE }}
 
 .. figure:: https://cdn.jsdelivr.net/gh/thombashi/pytest-md-report@master/ss/md-report_exclude_outcomes_verbose_output.png
     :scale: 80%
     :alt: https://github.com/thombashi/pytest-md-report/blob/master/ss/md-report_exclude_outcomes_verbose_output.png
+
+    Rendering result
+
+
+Add reports to the job summary of the GitHub action workflow runs
+-----------------------------------------------------------------------------
+The below example adds test reports to the job summary of the GitHub action workflow runs when tests fail.
+
+.. code-block:: yaml
+
+    name: md-report - job summary example
+
+    on:
+      pull_request:
+
+    jobs:
+      run-tests:
+        runs-on: ${{ matrix.os }}
+        strategy:
+          fail-fast: false
+          matrix:
+            os: [ubuntu-latest, windows-latest]
+
+        steps:
+          - uses: actions/checkout@v4
+
+          - uses: actions/setup-python@v5
+            with:
+              python-version: '3.12'
+              cache: pip
+
+          - name: Install dependencies
+            run: pip install --upgrade pytest-md-report
+
+          - name: Run tests
+            env:
+              REPORT_OUTPUT: md_report.md
+            shell: bash
+            run: |
+              echo "REPORT_FILE=${REPORT_OUTPUT}" >> "$GITHUB_ENV"
+              pytest -v --md-report --md-report-flavor gfm --md-report-exclude-outcomes passed skipped xpassed --md-report-output "$REPORT_OUTPUT"
+
+          - name: Output reports to the job summary when tests fail
+            if: failure()
+            shell: bash
+            run: |
+              if [ -f "$REPORT_FILE" ]; then
+                echo "<details><summary>Failed Test Report</summary>" >> $GITHUB_STEP_SUMMARY
+                echo "" >> $GITHUB_STEP_SUMMARY
+                cat "$REPORT_FILE" >> $GITHUB_STEP_SUMMARY
+                echo "" >> $GITHUB_STEP_SUMMARY
+                echo "</details>" >> $GITHUB_STEP_SUMMARY
+              fi
+
+.. figure:: https://cdn.jsdelivr.net/gh/thombashi/pytest-md-report@master/ss/md-md-report_job-summary_full.png
+    :scale: 80%
+    :alt: https://github.com/thombashi/pytest-md-report/blob/master/ss/md-md-report_job-summary_full.png
 
     Rendering result
 
