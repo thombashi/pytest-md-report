@@ -433,6 +433,7 @@ def extract_pytest_stats(
             except AttributeError:
                 continue
 
+            filesystempath = os.path.normpath(filesystempath).replace("\\", "/")
             testfunc = value.head_line.split("[")[0]
 
             if verbosity_level == 0:
