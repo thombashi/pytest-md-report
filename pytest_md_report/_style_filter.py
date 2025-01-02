@@ -1,4 +1,4 @@
-from typing import Any, Optional, cast
+from typing import Any, Final, Optional, cast
 
 from pytablewriter.style import Cell, Style
 from pytablewriter.writer import AbstractTableWriter
@@ -34,11 +34,11 @@ class ColorRetriever:
 
 def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
     writer = cast(AbstractTableWriter, kwargs["writer"])
-    color_policy = cast(ColorPolicy, kwargs["color_policy"])
-    color_map = kwargs["color_map"]
-    num_rows = cast(int, kwargs["num_rows"])
-    headers = writer.headers
-    header = headers[cell.col]
+    color_policy: Final = cast(ColorPolicy, kwargs["color_policy"])
+    color_map: Final = kwargs["color_map"]
+    num_rows: Final = cast(int, kwargs["num_rows"])
+    headers: Final = writer.headers
+    header: Final = headers[cell.col]
     fg_color = None
     bg_color = None
 
@@ -105,10 +105,10 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
 def col_separator_style_filter(
     left_cell: Optional[Cell], right_cell: Optional[Cell], **kwargs: dict[str, Any]
 ) -> Optional[Style]:
-    num_rows = cast(int, kwargs["num_rows"])
+    num_rows: Final = cast(int, kwargs["num_rows"])
     fg_color = None
     bg_color = None
-    row = left_cell.row if left_cell else cast(Cell, right_cell).row
+    row: Final = left_cell.row if left_cell else cast(Cell, right_cell).row
 
     if row == num_rows - 1:
         bg_color = BGColor.TOTAL_ROW

@@ -1,13 +1,14 @@
 import os.path
 import re
+from typing import Final
 
 import setuptools
 
 
-MODULE_NAME = "pytest-md-report"
-REPOSITORY_URL = f"https://github.com/thombashi/{MODULE_NAME:s}"
-REQUIREMENT_DIR = "requirements"
-ENCODING = "utf8"
+MODULE_NAME: Final = "pytest-md-report"
+REPOSITORY_URL: Final = f"https://github.com/thombashi/{MODULE_NAME:s}"
+REQUIREMENT_DIR: Final = "requirements"
+ENCODING: Final = "utf8"
 
 pkg_info: dict[str, str] = {}
 

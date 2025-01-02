@@ -1,17 +1,18 @@
 from enum import Enum, unique
 from textwrap import dedent
+from typing import Final
 
 from pytablewriter.writer.text import MarkdownFlavor
 from tcolorpy import AnsiFGColor
 
 
-COLOR_NAMES = "/".join([style.name.lower() for style in list(AnsiFGColor)])
+COLOR_NAMES: Final = "/".join([style.name.lower() for style in list(AnsiFGColor)])
 
 
 class Header:
-    FILEPATH = "filepath"
-    TESTFUNC = "function"
-    SUBTOTAL = "SUBTOTAL"
+    FILEPATH: Final = "filepath"
+    TESTFUNC: Final = "function"
+    SUBTOTAL: Final = "SUBTOTAL"
 
 
 class ColorPolicy(Enum):
@@ -21,39 +22,39 @@ class ColorPolicy(Enum):
 
 
 class ZerosRender:
-    NUMBER = "number"
-    EMPTY = "empty"
-    LIST = (NUMBER, EMPTY)
+    NUMBER: Final = "number"
+    EMPTY: Final = "empty"
+    LIST: Final = (NUMBER, EMPTY)
 
 
 class FGColor:
-    SUCCESS = "SUCCESS"
-    ERROR = "ERROR"
-    SKIP = "SKIP"
-    GRAYOUT = "GRAYOUT"
+    SUCCESS: Final = "SUCCESS"
+    ERROR: Final = "ERROR"
+    SKIP: Final = "SKIP"
+    GRAYOUT: Final = "GRAYOUT"
 
 
 class BGColor:
-    EVEN_ROW = "#202020"
-    ODD_ROW = "black"
-    TOTAL_ROW = "#000000"
+    EVEN_ROW: Final = "#202020"
+    ODD_ROW: Final = "black"
+    TOTAL_ROW: Final = "#000000"
 
 
 class Default:
-    COLOR_POLICY = ColorPolicy.AUTO
-    MARGIN = 1
-    MARKDOWN_FLAVOR = MarkdownFlavor.COMMON_MARK
-    ZEROS = ZerosRender.NUMBER
+    COLOR_POLICY: Final = ColorPolicy.AUTO
+    MARGIN: Final = 1
+    MARKDOWN_FLAVOR: Final = MarkdownFlavor.COMMON_MARK
+    ZEROS: Final = ZerosRender.NUMBER
     EXCLUDE_RESULTS: list[str] = []
 
     class FGColor:
-        SUCCESS = "light_green"
-        ERROR = "light_red"
-        SKIP = "light_yellow"
-        GRAYOUT = "light_black"
+        SUCCESS: Final = "light_green"
+        ERROR: Final = "light_red"
+        SKIP: Final = "light_yellow"
+        GRAYOUT: Final = "light_black"
 
 
-OPTION_PREFIX = "md-report"
+OPTION_PREFIX: Final = "md-report"
 
 
 @unique
@@ -195,4 +196,4 @@ class Option(Enum):
 
 
 class HelpMsg:
-    EXTRA_MSG_TEMPLATE = " you can also specify the value with {} environment variable."
+    EXTRA_MSG_TEMPLATE: Final = " you can also specify the value with {} environment variable."
