@@ -429,5 +429,5 @@ ini-options
 
 Dependencies
 ============================================
-- Python 3.7+
+- Python 3.9+
 - `Python package dependencies (automatically installed) <https://github.com/thombashi/pytest-md-report/network/dependencies>`__
