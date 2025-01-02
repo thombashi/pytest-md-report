@@ -1,4 +1,5 @@
 import os.path
+import re
 from typing import Dict, Type
 
 import setuptools
@@ -21,11 +22,16 @@ def get_release_command_class() -> Dict[str, Type[setuptools.Command]]:
     return {"release": ReleaseCommand}
 
 
+def make_long_description() -> str:
+    # ref: https://github.com/pypa/readme_renderer/issues/304
+    re_exclude = re.compile(r"\s*:scale:\s*\d+")
+
+    with open("README.rst", encoding=ENCODING) as f:
+        return "".join([line for line in f if not re_exclude.search(line)])
+
+
 with open(os.path.join(MODULE_NAME.replace("-", "_"), "__version__.py")) as f:
     exec(f.read(), pkg_info)
-
-with open("README.rst", encoding=ENCODING) as f:
-    LONG_DESCRIPTION = f.read()
 
 with open(os.path.join(REQUIREMENT_DIR, "requirements.txt")) as f:
     INSTALL_REQUIRES = [line.strip() for line in f if line.strip()]
@@ -43,7 +49,7 @@ setuptools.setup(
     include_package_data=True,
     keywords=["pytest", "plugin", "markdown"],
     license=pkg_info["__license__"],
-    long_description=LONG_DESCRIPTION,
+    long_description=make_long_description(),
     long_description_content_type="text/x-rst",
     packages=setuptools.find_packages(),
     package_data={MODULE_NAME: ["py.typed"]},
