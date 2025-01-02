@@ -1,5 +1,9 @@
 PYTHON := python3
 
+AUTHOR := Tsuyoshi Hombashi
+FIRST_RELEASE_YEAR := 2020
+LAST_UPDATE_YEAR := $(shell git log -1 --format=%cd --date=format:%Y)
+
 
 .PHONY: build
 build: clean
@@ -42,3 +46,8 @@ examples:
 .PHONY: test
 test:
 	$(PYTHON) -m tox -e py
+
+.PHONY: update-copyright
+update-copyright:
+	sed -i "s/f\"Copyright .*/f\"Copyright $(FIRST_RELEASE_YEAR)-$(LAST_UPDATE_YEAR), {__author__}\"/" pytest_md_report/__version__.py
+	sed -i "s/^Copyright (c) .* $(AUTHOR)/Copyright (c) $(FIRST_RELEASE_YEAR)-$(LAST_UPDATE_YEAR) $(AUTHOR)/" LICENSE
