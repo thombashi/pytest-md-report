@@ -1,6 +1,5 @@
 from enum import Enum, unique
 from textwrap import dedent
-from typing import List
 
 from pytablewriter.writer.text import MarkdownFlavor
 from tcolorpy import AnsiFGColor
@@ -45,7 +44,7 @@ class Default:
     MARGIN = 1
     MARKDOWN_FLAVOR = MarkdownFlavor.COMMON_MARK
     ZEROS = ZerosRender.NUMBER
-    EXCLUDE_RESULTS: List[str] = []
+    EXCLUDE_RESULTS: list[str] = []
 
     class FGColor:
         SUCCESS = "light_green"

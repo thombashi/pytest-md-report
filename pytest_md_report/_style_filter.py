@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Tuple, cast
+from typing import Any, Optional, cast
 
 from pytablewriter.style import Cell, Style
 from pytablewriter.writer import AbstractTableWriter
@@ -12,14 +12,14 @@ class ColorRetriever:
         row: int,
         is_grayout: bool,
         color_polilcy: ColorPolicy,
-        color_map: Dict[str, str],
+        color_map: dict[str, str],
     ) -> None:
         self.__row = row
         self.__is_grayout = is_grayout
         self.__color_polilcy = color_polilcy
         self.__color_map = color_map
 
-    def retrieve_fg_bg_color(self, base_color: str) -> Tuple[str, Optional[str]]:
+    def retrieve_fg_bg_color(self, base_color: str) -> tuple[str, Optional[str]]:
         bg_color: Optional[str] = None
 
         if (self.__row % 2) == 0:
@@ -103,7 +103,7 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
 
 
 def col_separator_style_filter(
-    left_cell: Optional[Cell], right_cell: Optional[Cell], **kwargs: Dict[str, Any]
+    left_cell: Optional[Cell], right_cell: Optional[Cell], **kwargs: dict[str, Any]
 ) -> Optional[Style]:
     num_rows = cast(int, kwargs["num_rows"])
     fg_color = None

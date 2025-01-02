@@ -1,6 +1,7 @@
 import os
 from collections import defaultdict
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
+from collections.abc import Mapping, Sequence
+from typing import Any, Optional
 
 from _pytest.config import Config
 from _pytest.config.argparsing import Parser
@@ -311,8 +312,8 @@ def retrieve_md_flavor(config: Config) -> MarkdownFlavor:
     return normalize_md_flavor(str(md_flavor))
 
 
-def retrieve_exclude_outcomes(config: Config) -> List[str]:
-    def norm_names(names: Sequence[Any]) -> List[str]:
+def retrieve_exclude_outcomes(config: Config) -> list[str]:
+    def norm_names(names: Sequence[Any]) -> list[str]:
         return [str(name).lower().strip() for name in names]
 
     exclude_outcomes = config.option.md_report_exclude_outcomes
@@ -408,7 +409,7 @@ def _normalize_stat_name(name: str) -> str:
     return name
 
 
-def retrieve_stat_count_map(reporter: TerminalReporter) -> Dict[str, int]:
+def retrieve_stat_count_map(reporter: TerminalReporter) -> dict[str, int]:
     stat_count_map = {}
 
     for name in ["failed", "passed", "skipped", "error", "xfailed", "xpassed"]:
@@ -420,8 +421,8 @@ def retrieve_stat_count_map(reporter: TerminalReporter) -> Dict[str, int]:
 
 def extract_pytest_stats(
     reporter: TerminalReporter, outcomes: Sequence[str], verbosity_level: int
-) -> Mapping[Tuple, Mapping[str, int]]:
-    results_per_testfunc: Dict[Tuple, Dict[str, int]] = {}
+) -> Mapping[tuple, Mapping[str, int]]:
+    results_per_testfunc: dict[tuple, dict[str, int]] = {}
 
     for stat_key, values in reporter.stats.items():
         if stat_key not in outcomes:
@@ -437,7 +438,7 @@ def extract_pytest_stats(
             testfunc = value.head_line.split("[")[0]
 
             if verbosity_level == 0:
-                key: Tuple = (filesystempath,)
+                key: tuple = (filesystempath,)
             elif verbosity_level >= 1:
                 key = (filesystempath, testfunc)
             else:
