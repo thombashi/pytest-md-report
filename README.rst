@@ -63,7 +63,7 @@ Increase verbosity level (``--md-report-verbose`` option):
 
     Output example (verbose)
 
-Not rendering results of zero value (``--md-report-zeros emmpty`` option):
+Not rendering results of zero value (``--md-report-zeros empty`` option):
 
 ::
 
