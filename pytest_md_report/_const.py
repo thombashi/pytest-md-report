@@ -176,6 +176,20 @@ class Option(Enum):
             default=Default.EXCLUDE_RESULTS,
         ),
     )
+    MD_REPORT_MARK_COLS = (
+        f"{OPTION_PREFIX}-mark-cols",
+        dedent(
+            """\
+            List of pytest mark names to render as additional report columns.
+            For each test, the mark's args (and kwargs) are rendered in the
+            corresponding column. When the same mark appears multiple times for
+            a row (e.g. via parametrize), values are joined with ' | '.
+            When specifying as an environment variable, pass a comma-separated
+            string (e.g. 'id,priority').
+            Defaults to '[]'.
+            """
+        ),
+    )
 
     @property
     def cmdoption_str(self) -> str:
