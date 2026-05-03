@@ -286,6 +286,115 @@ def test_pytest_md_report_flavor(testdir):
         )
 
 
+PYFILE_MARKED_TESTS = dedent(
+    """\
+    import pytest
+
+    @pytest.mark.id("TC-001")
+    @pytest.mark.priority("high")
+    def test_alpha():
+        assert True
+
+    @pytest.mark.id("TC-002")
+    @pytest.mark.priority("low")
+    def test_beta():
+        assert True
+
+    def test_gamma():
+        assert True
+    """
+)
+
+PYFILE_MARKED_PARAMETRIZED_TESTS = dedent(
+    """\
+    import pytest
+
+    @pytest.mark.parametrize(
+        "param",
+        [
+            pytest.param(1, marks=pytest.mark.id("TC-101")),
+            pytest.param(2, marks=pytest.mark.id("TC-102")),
+        ],
+    )
+    def test_param(param):
+        assert True
+    """
+)
+
+
+def test_pytest_md_report_mark_cols_verbose1(testdir):
+    testdir.makepyfile(test_marks=PYFILE_MARKED_TESTS)
+    expected = dedent(
+        """\
+        |   filepath    |  function  |   id   | priority | passed | SUBTOTAL |
+        | ------------- | ---------- | ------ | -------- | -----: | -------: |
+        | test_marks.py | test_alpha | TC-001 | high     |      1 |        1 |
+        | test_marks.py | test_beta  | TC-002 | low      |      1 |        1 |
+        | test_marks.py | test_gamma |        |          |      1 |        1 |
+        | TOTAL         |            |        |          |      3 |        3 |"""
+    )
+    result = testdir.runpytest(
+        "--md-report",
+        "--md-report-color",
+        "never",
+        "--md-report-verbose",
+        "1",
+        "--md-report-mark-cols",
+        "id",
+        "priority",
+    )
+    out = "\n".join(result.outlines[-6:])
+    print_test_result(expected=expected, actual=out)
+    assert out == expected
+
+
+def test_pytest_md_report_mark_cols_aggregate_parametrize(testdir):
+    testdir.makepyfile(test_marks_param=PYFILE_MARKED_PARAMETRIZED_TESTS)
+    expected = dedent(
+        """\
+        |      filepath       |  function  |       id       | passed | SUBTOTAL |
+        | ------------------- | ---------- | -------------- | -----: | -------: |
+        | test_marks_param.py | test_param | TC-101, TC-102 |      2 |        2 |
+        | TOTAL               |            |                |      2 |        2 |"""
+    )
+    result = testdir.runpytest(
+        "--md-report",
+        "--md-report-color",
+        "never",
+        "--md-report-verbose",
+        "1",
+        "--md-report-mark-cols",
+        "id",
+    )
+    out = "\n".join(result.outlines[-4:])
+    print_test_result(expected=expected, actual=out)
+    assert out == expected
+
+
+def test_pytest_md_report_mark_cols_verbose2(testdir):
+    testdir.makepyfile(test_marks_param=PYFILE_MARKED_PARAMETRIZED_TESTS)
+    expected = dedent(
+        """\
+        |      filepath       |  function  | params |   id   | passed | SUBTOTAL |
+        | ------------------- | ---------- | -----: | ------ | -----: | -------: |
+        | test_marks_param.py | test_param |      1 | TC-101 |      1 |        1 |
+        | test_marks_param.py | test_param |      2 | TC-102 |      1 |        1 |
+        | TOTAL               |            |        |        |      2 |        2 |"""
+    )
+    result = testdir.runpytest(
+        "--md-report",
+        "--md-report-color",
+        "never",
+        "--md-report-verbose",
+        "2",
+        "--md-report-mark-cols",
+        "id",
+    )
+    out = "\n".join(result.outlines[-5:])
+    print_test_result(expected=expected, actual=out)
+    assert out == expected
+
+
 def test_pytest_md_report_exclude_outcomes(testdir):
     testdir.makepyfile(PYFILE_MIX_TESTS)
     expected = dedent(

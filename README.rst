@@ -89,6 +89,44 @@ Generate GitHub Flavored Markdown (GFM) report:
 
 GFM rendering result can be seen at `here <https://github.com/thombashi/pytest-md-report/blob/master/examples/gfm_report.md>`__.
 
+Render custom columns from ``pytest.mark`` (``--md-report-mark-cols`` option):
+
+Given test functions decorated with marks such as:
+
+.. code-block:: python
+
+    import pytest
+
+    @pytest.mark.id("TC-001")
+    @pytest.mark.priority("high")
+    def test_alpha():
+        assert True
+
+    @pytest.mark.id("TC-002")
+    @pytest.mark.priority("low")
+    def test_beta():
+        assert True
+
+run pytest with the mark names to render as columns:
+
+::
+
+    pytest --md-report --md-report-color never --md-report-verbose 1 --md-report-mark-cols id priority
+
+::
+
+    |   filepath    |  function  |   id   | priority | passed | SUBTOTAL |
+    | ------------- | ---------- | ------ | -------- | -----: | -------: |
+    | test_marks.py | test_alpha | TC-001 | high     |      1 |        1 |
+    | test_marks.py | test_beta  | TC-002 | low      |      1 |        1 |
+    | TOTAL         |            |        |          |      2 |        2 |
+
+Notes:
+
+- The mark's positional args are rendered as a comma-separated string. Keyword args follow as ``key=value``. Marks without args render as ``True``.
+- When a function has multiple parametrized cases with different mark values (e.g. via ``pytest.param(..., marks=...)``), values are joined with ``, `` at ``--md-report-verbose 1`` (per-function) and listed individually at ``--md-report-verbose 2`` (per-parameter).
+- Custom marks should be `registered <https://docs.pytest.org/en/stable/how-to/mark.html#registering-marks>`__ in your pytest config to avoid ``PytestUnknownMarkWarning``.
+
 
 Config file examples
 --------------------------------------------
@@ -368,6 +406,21 @@ Command options
                             Defaults to '[]'.
                             you can also specify the value with
                             PYTEST_MD_REPORT_EXCLUDE_OUTCOMES environment variable.
+      --md-report-mark-cols=MD_REPORT_MARK_COLS [MD_REPORT_MARK_COLS ...]
+                            List of pytest mark names to render as additional report
+                            columns.
+                            For each test, the mark's args (and kwargs) are rendered
+                            in the
+                            corresponding column. When the same mark appears
+                            multiple times for
+                            a row (e.g. via parametrize), values are joined with ' |
+                            '.
+                            When specifying as an environment variable, pass a
+                            comma-separated
+                            string (e.g. 'id,priority').
+                            Defaults to '[]'.
+                            you can also specify the value with
+                            PYTEST_MD_REPORT_MARK_COLS environment variable.
 
 
 ini-options
@@ -430,6 +483,14 @@ ini-options
                         specifying as an environment variable, pass a
                         comma-separated string (e.g. 'passed,skipped'). Defaults
                         to '[]'.
+  md_report_mark_cols (args):
+                        List of pytest mark names to render as additional report
+                        columns. For each test, the mark's args (and kwargs) are
+                        rendered in the corresponding column. When the same mark
+                        appears multiple times for a row (e.g. via parametrize),
+                        values are joined with ' | '. When specifying as an
+                        environment variable, pass a comma-separated string
+                        (e.g. 'id,priority'). Defaults to '[]'.
 
 
 Dependencies
