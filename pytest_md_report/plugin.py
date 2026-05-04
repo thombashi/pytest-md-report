@@ -686,11 +686,7 @@ def make_md_report(
     empty_mark_cells: list[str] = ["" for _ in mark_cols]
     if verbosity_level == 0:
         writer.headers = (
-            [Header.FILEPATH]
-            + list(mark_cols)
-            + outcomes
-            + [Header.SUBTOTAL]
-            + duration_header
+            [Header.FILEPATH] + list(mark_cols) + outcomes + [Header.SUBTOTAL] + duration_header
         )
         matrix.append(
             ["TOTAL"]
