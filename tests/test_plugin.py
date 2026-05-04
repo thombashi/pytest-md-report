@@ -416,6 +416,8 @@ PYFILE_DURATION_TESTS = dedent(
         assert True
     """
 )
+
+
 def _parse_md_table_row(line: str) -> list[str]:
     parts = [cell.strip() for cell in line.strip().strip("|").split("|")]
     return parts
@@ -526,8 +528,7 @@ def test_pytest_md_report_show_duration_aggregates_parametrize_at_verbose1(testd
 
     assert int(param_row[subtotal_idx]) == case_count
     assert param_duration >= aggregate_lower, (
-        f"expected aggregated parametrize duration >= {aggregate_lower}s, "
-        f"got {param_duration}s"
+        f"expected aggregated parametrize duration >= {aggregate_lower}s, got {param_duration}s"
     )
 
 
