@@ -44,6 +44,8 @@ PYFILE_MIX_TESTS = dedent(
         [Option.MD_REPORT_SKIP_COLOR, "yellow"],
         [Option.MD_REPORT_ERROR_COLOR, "red"],
         [Option.MD_REPORT_MARK_COLS, "id"],
+        [Option.MD_REPORT_SHOW_DURATION, None],
+        [Option.MD_REPORT_DURATION_PRECISION, 4],
     ],
 )
 def test_pytest_md_report_option(testdir, option, value):

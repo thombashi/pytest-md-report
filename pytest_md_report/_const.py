@@ -14,6 +14,7 @@ class Header:
     TESTFUNC: Final = "function"
     PARAMS: Final = "params"
     SUBTOTAL: Final = "SUBTOTAL"
+    DURATION: Final = "duration"
 
 
 class ColorPolicy(Enum):
@@ -47,6 +48,7 @@ class Default:
     MARKDOWN_FLAVOR: Final = MarkdownFlavor.COMMON_MARK
     ZEROS: Final = ZerosRender.NUMBER
     EXCLUDE_RESULTS: list[str] = []
+    DURATION_PRECISION: Final = 3
 
     class FGColor:
         SUCCESS: Final = "light_green"
@@ -189,6 +191,25 @@ class Option(Enum):
             Defaults to '[]'.
             """
         ),
+    )
+    MD_REPORT_SHOW_DURATION = (
+        f"{OPTION_PREFIX}-show-duration",
+        dedent(
+            """\
+            Add a 'duration' column showing the total execution time in seconds.
+            Durations are aggregated per row (per file / function / parameters
+            depending on the verbosity level) by summing setup, call, and teardown phases.
+            """
+        ),
+    )
+    MD_REPORT_DURATION_PRECISION = (
+        f"{OPTION_PREFIX}-duration-precision",
+        dedent(
+            """\
+            Number of decimal places used to render the duration column.
+            Defaults to {default}.
+            """
+        ).format(default=Default.DURATION_PRECISION),
     )
 
     @property

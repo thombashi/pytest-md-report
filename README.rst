@@ -128,6 +128,32 @@ Notes:
 - Custom marks should be `registered <https://docs.pytest.org/en/stable/how-to/mark.html#registering-marks>`__ in your pytest config to avoid ``PytestUnknownMarkWarning``.
 
 
+Show execution duration per row (``--md-report-show-duration`` option):
+
+::
+
+    pytest --md-report --md-report-color never --md-report-verbose 2 --md-report-show-duration
+
+::
+
+    |     filepath     |    function    | params | passed | failed | skipped | SUBTOTAL | duration |
+    | ---------------- | -------------- | -----: | -----: | -----: | ------: | -------: | -------: |
+    | test_smoke_md.py | test_pass_fast |        |      1 |      0 |       0 |        1 |    0.000 |
+    | test_smoke_md.py | test_pass_slow |        |      1 |      0 |       0 |        1 |    0.050 |
+    | test_smoke_md.py | test_param     |      1 |      1 |      0 |       0 |        1 |    0.011 |
+    | test_smoke_md.py | test_param     |      2 |      1 |      0 |       0 |        1 |    0.011 |
+    | test_smoke_md.py | test_param     |      3 |      1 |      0 |       0 |        1 |    0.010 |
+    | test_smoke_md.py | test_skipped   |        |      0 |      0 |       1 |        1 |    0.000 |
+    | test_smoke_md.py | test_failed    |        |      0 |      1 |       0 |        1 |    0.000 |
+    | TOTAL            |                |        |      5 |      1 |       1 |        7 |    0.083 |
+
+Notes:
+
+- Values are total seconds, summed across the ``setup``, ``call``, and ``teardown`` phases of every test report aggregated into the row.
+- At lower verbosity levels (``--md-report-verbose 0`` per file, ``1`` per function), durations of all aggregated tests are summed into the row.
+- Use ``--md-report-duration-precision`` to change the number of decimal places (default: ``3``).
+
+
 Config file examples
 --------------------------------------------
 You can set configurations with ``pyproject.toml`` or ``setup.cfg`` as follows.
@@ -421,6 +447,23 @@ Command options
                             Defaults to '[]'.
                             you can also specify the value with
                             PYTEST_MD_REPORT_MARK_COLS environment variable.
+      --md-report-show-duration
+                            Add a 'duration' column showing the total execution time
+                            in seconds.
+                            Durations are aggregated per row (per file / function /
+                            parameters
+                            depending on the verbosity level) by summing setup,
+                            call, and
+                            teardown phases.
+                            you can also specify the value with
+                            PYTEST_MD_REPORT_SHOW_DURATION environment variable.
+      --md-report-duration-precision=PRECISION
+                            Number of decimal places used to render the duration
+                            column.
+                            Defaults to 3.
+                            you can also specify the value with
+                            PYTEST_MD_REPORT_DURATION_PRECISION environment
+                            variable.
 
 
 ini-options
@@ -491,6 +534,14 @@ ini-options
                         values are joined with ' | '. When specifying as an
                         environment variable, pass a comma-separated string
                         (e.g. 'id,priority'). Defaults to '[]'.
+  md_report_show_duration (bool):
+                        Add a 'duration' column showing the total execution time
+                        in seconds. Durations are aggregated per row (per file /
+                        function / parameters depending on the verbosity level)
+                        by summing setup, call, and teardown phases.
+  md_report_duration_precision (string):
+                        Number of decimal places used to render the duration
+                        column. Defaults to 3.
 
 
 Dependencies

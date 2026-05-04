@@ -1,4 +1,5 @@
 import difflib
+import re
 import sys
 from textwrap import dedent
 
@@ -393,6 +394,173 @@ def test_pytest_md_report_mark_cols_verbose2(testdir):
     out = "\n".join(result.outlines[-5:])
     print_test_result(expected=expected, actual=out)
     assert out == expected
+
+
+PYFILE_DURATION_TESTS = dedent(
+    """\
+    import time
+
+    import pytest
+
+    def test_a():
+        time.sleep(0.02)
+        assert True
+
+    def test_b():
+        time.sleep(0.04)
+        assert True
+
+    @pytest.mark.parametrize("p", [1, 2])
+    def test_param(p):
+        time.sleep(0.01)
+        assert True
+    """
+)
+
+
+def _parse_md_table_row(line: str) -> list[str]:
+    parts = [cell.strip() for cell in line.strip().strip("|").split("|")]
+    return parts
+
+
+def _extract_table(outlines: list[str]) -> list[list[str]]:
+    table: list[list[str]] = []
+    for line in outlines:
+        stripped = line.strip()
+        if not stripped.startswith("|") or not stripped.endswith("|"):
+            continue
+        if set(stripped.replace("|", "").replace(" ", "").replace(":", "")) <= {"-"}:
+            continue
+        table.append(_parse_md_table_row(line))
+    return table
+
+
+def test_pytest_md_report_show_duration_header(testdir):
+    testdir.makepyfile(PYFILE_DURATION_TESTS)
+    result = testdir.runpytest(
+        "--md-report",
+        "--md-report-color",
+        "never",
+        "--md-report-verbose",
+        "1",
+        "--md-report-show-duration",
+    )
+    table = _extract_table(result.outlines)
+    assert table, "no markdown table found in output"
+    headers = table[0]
+    assert headers[-1] == "duration"
+    assert headers[-2] == "SUBTOTAL"
+
+
+def test_pytest_md_report_show_duration_off_by_default(testdir):
+    testdir.makepyfile(PYFILE_DURATION_TESTS)
+    result = testdir.runpytest(
+        "--md-report",
+        "--md-report-color",
+        "never",
+        "--md-report-verbose",
+        "1",
+    )
+    table = _extract_table(result.outlines)
+    assert table, "no markdown table found in output"
+    headers = table[0]
+    assert "duration" not in headers
+
+
+def test_pytest_md_report_show_duration_total_aggregates_rows(testdir):
+    testdir.makepyfile(PYFILE_DURATION_TESTS)
+    result = testdir.runpytest(
+        "--md-report",
+        "--md-report-color",
+        "never",
+        "--md-report-verbose",
+        "1",
+        "--md-report-show-duration",
+    )
+    table = _extract_table(result.outlines)
+    headers = table[0]
+    duration_idx = headers.index("duration")
+
+    data_rows = table[1:]
+    assert data_rows
+    assert data_rows[-1][0] == "TOTAL"
+
+    pattern = re.compile(r"^\d+\.\d{3}$")
+    row_durations = []
+    for row in data_rows[:-1]:
+        cell = row[duration_idx]
+        assert pattern.match(cell), f"unexpected duration cell format: {cell!r}"
+        row_durations.append(float(cell))
+
+    total_cell = data_rows[-1][duration_idx]
+    assert pattern.match(total_cell), f"unexpected TOTAL duration format: {total_cell!r}"
+    total_value = float(total_cell)
+
+    # Each row is rounded independently, so the reported TOTAL can drift from
+    # the sum of rounded row cells by up to ~(num_rows * 0.5) of the last
+    # decimal. Allow a generous tolerance to absorb that rounding noise.
+    assert total_value == pytest.approx(sum(row_durations), abs=len(row_durations) * 1e-3)
+    assert total_value > 0.0
+
+
+def test_pytest_md_report_show_duration_aggregates_parametrize_at_verbose1(testdir):
+    testdir.makepyfile(test_dur=PYFILE_DURATION_TESTS)
+    result = testdir.runpytest(
+        "--md-report",
+        "--md-report-color",
+        "never",
+        "--md-report-verbose",
+        "1",
+        "--md-report-show-duration",
+    )
+    table = _extract_table(result.outlines)
+    headers = table[0]
+    duration_idx = headers.index("duration")
+    function_idx = headers.index("function")
+
+    param_row = next(row for row in table[1:] if row[function_idx] == "test_param")
+    a_row = next(row for row in table[1:] if row[function_idx] == "test_a")
+
+    param_duration = float(param_row[duration_idx])
+    a_duration = float(a_row[duration_idx])
+
+    assert param_duration > a_duration
+
+
+def test_pytest_md_report_show_duration_precision(testdir):
+    testdir.makepyfile(PYFILE_DURATION_TESTS)
+    result = testdir.runpytest(
+        "--md-report",
+        "--md-report-color",
+        "never",
+        "--md-report-verbose",
+        "1",
+        "--md-report-show-duration",
+        "--md-report-duration-precision",
+        "5",
+    )
+    table = _extract_table(result.outlines)
+    headers = table[0]
+    duration_idx = headers.index("duration")
+
+    pattern = re.compile(r"^\d+\.\d{5}$")
+    for row in table[1:]:
+        cell = row[duration_idx]
+        assert pattern.match(cell), f"expected 5-decimal precision, got {cell!r}"
+
+
+def test_pytest_md_report_show_duration_via_envvar(testdir, monkeypatch):
+    testdir.makepyfile(PYFILE_DURATION_TESTS)
+    monkeypatch.setenv("PYTEST_MD_REPORT_SHOW_DURATION", "true")
+    result = testdir.runpytest(
+        "--md-report",
+        "--md-report-color",
+        "never",
+        "--md-report-verbose",
+        "1",
+    )
+    table = _extract_table(result.outlines)
+    assert table[0][-1] == "duration"
 
 
 def test_pytest_md_report_exclude_outcomes(testdir):
