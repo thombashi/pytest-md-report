@@ -410,9 +410,9 @@ PYFILE_DURATION_TESTS = dedent(
         time.sleep(0.04)
         assert True
 
-    @pytest.mark.parametrize("p", [1, 2])
+    @pytest.mark.parametrize("p", [1, 2, 3])
     def test_param(p):
-        time.sleep(0.01)
+        time.sleep(0.05)
         assert True
     """
 )
@@ -517,14 +517,19 @@ def test_pytest_md_report_show_duration_aggregates_parametrize_at_verbose1(testd
     headers = table[0]
     duration_idx = headers.index("duration")
     function_idx = headers.index("function")
+    subtotal_idx = headers.index("SUBTOTAL")
+
+    per_case_sleep = 0.05
+    case_count = 3
+    aggregate_lower = per_case_sleep * case_count
 
     param_row = next(row for row in table[1:] if row[function_idx] == "test_param")
-    a_row = next(row for row in table[1:] if row[function_idx] == "test_a")
-
     param_duration = float(param_row[duration_idx])
-    a_duration = float(a_row[duration_idx])
 
-    assert param_duration > a_duration
+    assert int(param_row[subtotal_idx]) == case_count
+    assert param_duration >= aggregate_lower, (
+        f"expected aggregated parametrize duration >= {aggregate_lower}s, got {param_duration}s"
+    )
 
 
 def test_pytest_md_report_show_duration_precision(testdir):
