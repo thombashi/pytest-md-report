@@ -16,7 +16,6 @@ from typepy.error import TypeConversionError
 from ._const import ColorPolicy, Default, FGColor, Header, HelpMsg, Option, ZerosRender
 from ._style_filter import col_separator_style_filter, style_filter
 
-
 _MARK_DATA_ATTR = "_pytest_md_report_mark_data"
 
 
@@ -557,8 +556,10 @@ def _compute_row_key(value: Any, verbosity_level: int) -> Optional[tuple]:
     if verbosity_level == 0:
         return (filesystempath,)
     if verbosity_level == 1:
+        return (filesystempath, testfunc.split(".")[0])
+    if verbosity_level == 2:
         return (filesystempath, testfunc)
-    if verbosity_level >= 2:
+    if verbosity_level >= 3:
         param_str = ""
         if "[" in head_line:
             param_str = head_line.split("[", 1)[1].rstrip("]")
@@ -697,7 +698,18 @@ def make_md_report(
         )
     elif verbosity_level == 1:
         writer.headers = (
-            [Header.FILEPATH, Header.TESTFUNC]
+            [Header.FILEPATH, Header.TESTCLASS] + list(mark_cols) + outcomes + [Header.SUBTOTAL]
+        )
+        matrix.append(
+            ["TOTAL", ""]
+            + empty_mark_cells
+            + [total_stats.get(key, 0) for key in outcomes]
+            + [sum(total_stats.values())]
+            + total_duration_cells()
+        )
+    elif verbosity_level == 2:
+        writer.headers = (
+            [Header.FILEPATH, Header.TESTCLASS, Header.TESTFUNC]
             + list(mark_cols)
             + outcomes
             + [Header.SUBTOTAL]
@@ -710,7 +722,7 @@ def make_md_report(
             + [sum(total_stats.values())]
             + total_duration_cells()
         )
-    elif verbosity_level >= 2:
+    elif verbosity_level >= 3:
         writer.headers = (
             [Header.FILEPATH, Header.TESTFUNC, Header.PARAMS]
             + list(mark_cols)

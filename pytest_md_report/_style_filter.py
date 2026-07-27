@@ -69,6 +69,7 @@ def style_filter(cell: Cell, **kwargs: Any) -> Optional[Style]:
 
     if header in (
         Header.FILEPATH,
+        Header.TESTCLASS,
         Header.TESTFUNC,
         Header.PARAMS,
         Header.SUBTOTAL,

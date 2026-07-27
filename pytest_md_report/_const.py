@@ -11,6 +11,7 @@ COLOR_NAMES: Final = "/".join([style.name.lower() for style in list(AnsiFGColor)
 
 class Header:
     FILEPATH: Final = "filepath"
+    TESTCLASS: Final = "class"
     TESTFUNC: Final = "function"
     PARAMS: Final = "params"
     SUBTOTAL: Final = "SUBTOTAL"
